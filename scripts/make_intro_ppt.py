@@ -214,19 +214,22 @@ line.fill.fore_color.rgb = GOLD
 line.line.fill.background()
 
 add_text(s, "POLICE FRAMEWORKS",
-         0.8, 2.0, 12, 0.8, size=16, bold=True, color=GOLD)
+         0.8, 1.9, 12, 0.8, size=16, bold=True, color=GOLD)
 add_text(s, "경찰 프레임워크 툴킷",
-         0.8, 2.95, 12, 1.2, size=54, bold=True, color=WHITE)
+         0.8, 2.85, 12, 1.2, size=54, bold=True, color=WHITE)
 add_text(s,
          "Claude Code를 위한 12개 근거기반 경찰활동 프레임워크\n"
          "메타 라우터 /peel — 상황 입력 → 최적 프레임워크 선택·시퀀싱",
-         0.8, 4.5, 12, 1.2, size=18, color=GRAY_LIGHT)
+         0.8, 4.4, 12, 1.2, size=18, color=GRAY_LIGHT)
+add_text(s,
+         "경찰 실무자에게 드리는 참고 자료 · 경주경찰서 경찰발전협의회 회원이 AI 전문가로서 작성",
+         0.8, 5.25, 12, 0.4, size=13, color=GOLD)
 
 # 하단 작성자 정보
-add_text(s, "작성 · 최희철",
-         0.8, 6.2, 12, 0.4, size=16, bold=True, color=WHITE)
+add_text(s, "작성 · 최희철 (AI 전문가)",
+         0.8, 6.15, 12, 0.4, size=16, bold=True, color=WHITE)
 add_text(s, "경주경찰서 경찰발전협의회 회원  ·  2026년 4월",
-         0.8, 6.55, 12, 0.4, size=13, color=GRAY_LIGHT)
+         0.8, 6.5, 12, 0.4, size=13, color=GRAY_LIGHT)
 
 
 # ══════════════════════════════════════════════════════════════
@@ -239,20 +242,21 @@ add_title_bar(s, "왜 만들었는가", "문제의식과 목적")
 add_text(s, "❶  문제의식",
          0.6, 1.6, 12, 0.4, size=18, bold=True, color=NAVY)
 add_bullets(s, [
-    "경찰발전협의회 토의가 종종 개인 경험과 사례 중심으로 흘러 구조화된 분석이 부족",
-    "영미권에서 40년 이상 축적된 근거기반 경찰활동 프레임워크는 한국어로 접근이 어렵고 산재",
+    "한국 경찰 현장에는 뛰어난 실무 지식이 있지만, 이를 체계화한 분석 도구가 개인 머릿속에만 존재",
+    "영미권에서 40년 이상 축적된 근거기반 경찰활동 프레임워크는 한국어 자료가 적고 산재",
     "일선 대응의 기본값이 \"순찰 강화\"와 \"단속\"에 머물러 제3의 대안 제시가 제한적",
     "\"무관용\" 요구가 절차적 정의·지역사회 신뢰를 훼손해도 걸러낼 이론적 장치 부재",
 ], 0.9, 2.1, 12, 2.0, size=14)
 
-add_text(s, "❷  이 도구의 목적",
+add_text(s, "❷  이 도구의 위치 (작성자의 역할)",
          0.6, 4.15, 12, 0.4, size=18, bold=True, color=NAVY)
 add_bullets(s, [
-    "경찰발전협의회가 사례 토의를 넘어 구조화된 분석으로 이동할 수 있는 실무 도구 제공",
-    "12개 근거기반 프레임워크를 한국 경찰 맥락에 맞게 \"번역\"이 아닌 \"재작성\"",
-    "Reid 같은 강압적 기법은 의도적으로 배제 — 절차적 정의가 모든 프레임워크의 전제",
-    "Claude Code 위에서 즉시 사용 가능한 형태로 패키징 (Skill 시스템 활용)",
-], 0.9, 4.65, 12, 2.0, size=14)
+    "작성자는 **AI 전문가**입니다. 경찰 실무자가 아닙니다.",
+    "경주경찰서 경찰발전협의회 회원이지만, 경발협은 봉사단체이며 범죄 분석·수사는 경찰의 몫",
+    "이 도구는 **경찰 실무자에게 드리는 참고 자료** — 경발협이 직접 쓰는 도구가 아님",
+    "12개 프레임워크를 한국 경찰 맥락으로 \"재작성\"해, 지구대·경찰서가 참고할 수 있게 정리",
+    "모든 적용은 경찰이 소속 기관 지침·법령·현장 판단과 결합해 검증해야 함",
+], 0.9, 4.65, 12, 2.3, size=13)
 
 add_footer(s)
 
@@ -697,7 +701,8 @@ add_box(s, "Broken Windows  ·  비판적 재해석",
         "Zero Tolerance로 변질.\n"
         "이 툴킷은 \"무관용 단속\"이 아니라\n"
         "CPTED + 복지 연계로 재해석.\n"
-        "경발협이 \"엄격 단속\" 요구에 빠지지 않도록\n경고 필터 역할.",
+        "주민 측 \"엄격 단속\" 요구에\n"
+        "경찰이 즉답하지 않도록 경고 필터 역할.",
         6.85, 4.35, 6.05, 2.6,
         title_color=RED, border_color=RED)
 
@@ -710,7 +715,7 @@ add_footer(s)
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
 add_title_bar(s, "샘플 테스트 · 시나리오 입력",
-              "경찰발전협의회 안건을 /peel 에 입력하면")
+              "성건파출소가 /peel 에 반복 민원을 입력하면")
 
 # 큰 입력 박스
 box = s.shapes.add_shape(
@@ -723,17 +728,17 @@ box.line.color.rgb = NAVY
 box.line.width = Pt(1.5)
 box.adjustments[0] = 0.03
 
-add_text(s, "▸ 입력 (경발협 안건)",
+add_text(s, "▸ 입력 (성건파출소 접수 반복 민원 · 3개월 누적 14건)",
          0.85, 1.75, 12, 0.4, size=14, bold=True, color=NAVY)
 
 scenario = (
-    "울산 남구 ○○동 근린공원에서 지난 3개월간 야간 시간대(22~02시)에\n"
-    "청소년 집단(5~10명) 음주·흡연·소란 민원이 반복 접수되고 있다.\n"
+    "경주시 성건동 ○○근린공원에서 지난 3개월간 야간 시간대(22~02시)에\n"
+    "청소년 집단(15~18세 추정, 5~10명) 음주·흡연·소란 민원이 반복 접수되고 있다.\n"
     "주민 민원 총 14건. 순찰차가 접근하면 흩어지고, 떠나면 복귀하는 패턴.\n"
     "주변 편의점에서 청소년 주류 판매 의심 정황도 있음.\n\n"
     "일부 주민은 \"무관용 단속\"을 강하게 요구하고 있고,\n"
     "다른 주민은 \"우리 애들인데 범죄자 취급하지 말라\"는 입장.\n"
-    "지구대 인력으로는 야간 상시 배치 불가능."
+    "성건파출소 인력으로는 야간 상시 배치 불가능."
 )
 add_text(s, scenario, 0.85, 2.2, 12, 3.4, size=13, color=GRAY_DARK)
 
@@ -914,17 +919,18 @@ add_footer(s)
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "경찰발전협의회 활용 가이드",
-              "안건 유형별 권장 프레임워크 조합")
+add_title_bar(s, "경찰 실무 활용 가이드",
+              "지구대·경찰서 각 부서별 권장 프레임워크 조합")
 
 # 활용 표
 rows = [
-    ("반복 민원 안건", "SARA + Crime Triangle + CPTED", "근본 원인과 환경 개입"),
-    ("지역 치안 우려", "Hot Spots + ILP + SARA", "데이터 기반 우선순위"),
-    ("환경 안전 점검", "CPTED + Crime Triangle", "물리 환경 개선"),
-    ("지역 불신·민원 사례", "Procedural Justice + COP", "신뢰 회복 진단"),
-    ("청소년·경범죄 이슈", "Broken Windows(비판) + COP", "\"단속\" 함정 회피"),
-    ("순찰 배치 건의", "Hot Spots + Crime Triangle", "감(感) 아닌 근거"),
+    ("지구대 · 반복 민원 분석", "SARA + Crime Triangle + CPTED", "근본 원인과 환경 개입"),
+    ("생활안전계 · 관할 치안 전략", "Hot Spots + ILP + SARA", "데이터 기반 우선순위"),
+    ("범죄예방진단팀 · 환경 점검", "CPTED + Crime Triangle", "물리 환경 개선"),
+    ("감찰 · 민원 사후 검토", "Procedural Justice + COP", "신뢰 회복 진단"),
+    ("여성청소년과 · 청소년 이슈", "Broken Windows(비판) + COP", "\"단속\" 함정 회피"),
+    ("수사과 · 조사·면담", "PEACE + Cognitive Interview", "비강압 진술 확보"),
+    ("위기협상요원 · 정신건강 위기", "ICAT + BCSM", "물리력 최소화"),
 ]
 
 # 헤더
@@ -935,36 +941,36 @@ header = s.shapes.add_shape(
 header.fill.solid()
 header.fill.fore_color.rgb = NAVY
 header.line.fill.background()
-add_text(s, "안건 유형", 0.8, 1.65, 3.0, 0.3,
+add_text(s, "부서 · 상황", 0.8, 1.65, 4.5, 0.3,
          size=12, bold=True, color=WHITE)
-add_text(s, "권장 프레임워크", 4.0, 1.65, 5.0, 0.3,
+add_text(s, "권장 프레임워크", 5.5, 1.65, 4.5, 0.3,
          size=12, bold=True, color=WHITE)
-add_text(s, "핵심 효과", 9.2, 1.65, 4.0, 0.3,
+add_text(s, "핵심 효과", 10.2, 1.65, 3.0, 0.3,
          size=12, bold=True, color=WHITE)
 
 y = 2.1
 for i, (topic, fws, effect) in enumerate(rows):
     row = s.shapes.add_shape(
         MSO_SHAPE.RECTANGLE, Inches(0.6), Inches(y),
-        Inches(12.3), Inches(0.5)
+        Inches(12.3), Inches(0.45)
     )
     row.fill.solid()
     row.fill.fore_color.rgb = WHITE if i % 2 == 0 else GRAY_LIGHT
     row.line.fill.background()
-    add_text(s, topic, 0.8, y + 0.1, 3.0, 0.3, size=12, bold=True, color=NAVY)
-    add_text(s, fws, 4.0, y + 0.1, 5.2, 0.3, size=12, color=GRAY_DARK)
-    add_text(s, effect, 9.2, y + 0.1, 4.0, 0.3, size=11, color=GRAY_MID)
-    y += 0.5
+    add_text(s, topic, 0.8, y + 0.08, 4.7, 0.3, size=11, bold=True, color=NAVY)
+    add_text(s, fws, 5.5, y + 0.08, 4.7, 0.3, size=11, color=GRAY_DARK)
+    add_text(s, effect, 10.2, y + 0.08, 3.0, 0.3, size=10, color=GRAY_MID)
+    y += 0.45
 
-# 토의 운영 팁
-add_text(s, "❖  토의 운영 팁",
+# 사용 팁
+add_text(s, "❖  적용 팁 (경찰 실무자용)",
          0.6, 5.4, 12, 0.4, size=14, bold=True, color=NAVY)
 tips = [
-    "안건 사전 배포 시 /peel 출력을 첨부 → 토의 시작부터 구조화",
-    "프레임워크의 체크리스트를 프로젝터에 띄우고 항목별 의견 수렴",
-    "\"느낌\" 발언 대신 프레임워크 항목에 대한 답변으로 정리",
+    "사건 분석 전 /peel 을 돌려 권장 프레임워크와 제외 프레임워크를 먼저 확인",
+    "선정된 프레임워크의 체크리스트를 회의에 띄우고 항목별 논의",
+    "\"느낌\" 대신 프레임워크 항목에 대한 답변으로 정리",
     "결론은 \"순찰 강화\"가 아닌 다음 단계(담당·일정·지표) 형태로 기록",
-    "3개월 후 평가 회의를 안건 통과와 동시에 예약 — Assessment 단계 사전 확보",
+    "KICS 분석이 필요한 질문은 따로 분리해 범죄예방진단팀·생활안전계에 할당",
 ]
 add_bullets(s, tips, 0.9, 5.85, 12, 1.8, size=12)
 
@@ -988,7 +994,7 @@ principles = [
     ("강압 기법 의도적 배제",
      "Reid 기법 등 허위 자백 유발 기법은 포함하지 않음 — PEACE가 윤리적·실증적 대안"),
     ("한국 맥락 재작성",
-     "단순 번역이 아닌 한국 경찰(지구대·경발협·KICS·해바라기센터) 실무 맥락 기준"),
+     "단순 번역이 아닌 한국 경찰(경찰청·경찰서·지구대·파출소·KICS) 실무 맥락 기준"),
     ("효율보다 정당성",
      "절차적 정의 연구는 \"무엇을\" 보다 \"어떻게\"가 정당성을 결정함을 보여줌"),
 ]
@@ -1008,12 +1014,12 @@ for title, body in principles:
 add_text(s, "✦  다음 단계",
          0.6, 5.6, 12, 0.4, size=16, bold=True, color=NAVY)
 steps = [
-    "1.  경주경찰서 경찰발전협의회 내부 시연 및 피드백 수집",
-    "2.  한국 경찰 실제 사례로 각 프레임워크 문서 보강",
-    "3.  개선 후 GitHub 공개 — 전국 경발협과 지구대 사용 가능하도록",
-    "4.  한국어 경찰 훈련 커리큘럼 연계 가능성 검토",
+    "1.  경주경찰서 경찰 실무자(생활안전계·지구대·범죄예방진단팀) 피드백 수집",
+    "2.  경주 지역 공공데이터 핫스팟 브리핑(docs/gyeongju-hotspots.md) 검토",
+    "3.  한국 경찰 실제 사례로 각 프레임워크 문서 보강 — 현장 용어·절차 반영",
+    "4.  개선 후 GitHub 공개 — 전국 지구대·경찰서·훈련과정이 참고할 수 있도록",
 ]
-add_bullets(s, steps, 0.9, 6.1, 12, 1.2, size=12)
+add_bullets(s, steps, 0.9, 6.1, 12, 1.4, size=12)
 
 # 연락처 블록
 contact = s.shapes.add_shape(
