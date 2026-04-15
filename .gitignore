@@ -10,3 +10,7 @@ __pycache__/
 *.pyc
 .env
 .env.local
+
+# 공개 저장소에 포함하지 않는 배포물 (공개 시 제외)
+docs/intro.pptx
+*.pptx

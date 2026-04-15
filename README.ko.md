@@ -75,7 +75,7 @@ git clone https://github.com/ironyjk/police-frameworks.git ~/.claude/skills/poli
 curl -sL https://raw.githubusercontent.com/ironyjk/police-frameworks/main/install.sh | bash
 ```
 
-각 프레임워크는 독립적인 Claude Code Skill입니다. 개별 호출하거나 `/peel` 메타 라우터를 통해 사용할 수 있습니다. 샘플 테스트는 [docs/sample-test.md](docs/sample-test.md)를, 소개 슬라이드는 [docs/intro.pptx](docs/intro.pptx)를 참조하세요.
+각 프레임워크는 독립적인 Claude Code Skill입니다. 개별 호출하거나 `/peel` 메타 라우터를 통해 사용할 수 있습니다. 샘플 테스트는 [docs/sample-test.md](docs/sample-test.md)를 참조하세요.
 
 ---
 
