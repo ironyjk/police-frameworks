@@ -11,6 +11,7 @@ __pycache__/
 .env
 .env.local
 
-# 공개 저장소에 포함하지 않는 배포물 (공개 시 제외)
+# 공개 저장소에 포함하지 않는 배포물/내부 참고자료 (공개 시 제외)
 docs/intro.pptx
+docs/gyeongju-hotspots.md
 *.pptx
