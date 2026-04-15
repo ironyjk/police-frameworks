@@ -1,0 +1,138 @@
+# Police Frameworks (경찰 프레임워크 툴킷)
+
+> Claude Code를 위한 12개 근거 기반(Evidence-Based) 경찰활동 프레임워크 메타 라우터
+
+**Police Frameworks**는 경찰 실무에서 쓰이는 검증된 분석 도구들을 한곳에 모은 프로젝트입니다. `/think`가 경영 전략, `/howtotalk`가 의사소통을 위한 것이라면, 이 프로젝트는 경찰관, 지휘관, 경찰발전협의회 위원을 위한 지능형 라우팅 계층입니다.
+
+상황을 설명하면(반복되는 핫스팟, 까다로운 조사 면담, 위기 신고, 민원), 메타 라우터가 적합한 프레임워크(들)를 선택하고 순서를 잡아 적용 방법을 안내합니다.
+
+---
+
+## 왜 만들었나
+
+한국 경찰 현장에는 뛰어난 실무 지식이 있지만, 이를 체계화한 분석 도구가 개별 경찰관의 머릿속에만 존재하는 경우가 많습니다. 한편 영미권에서는 40년 이상 축적된 POP(문제지향 경찰활동), 정보기반 경찰활동, 절차적 정의 연구가 있지만 한국어 자료가 적고 산재되어 있습니다.
+
+이 프로젝트는:
+- **학술/교리 자료를 한국 맥락에 맞게 재구성**합니다 (단순 번역이 아님)
+- **강압적 기법(Reid 자백유도 등)은 배제**합니다 — 근거기반 비강압 기법(PEACE)만 수록
+- **경찰발전협의회**가 사례 중심 토의를 넘어 구조화된 분석으로 이동할 수 있는 도구를 제공합니다
+
+---
+
+## 구성 (4개 축 × 12개 프레임워크)
+
+### 축 1 — 문제지향 경찰활동 (Problem-Oriented Policing)
+
+| 프레임워크 | 창시자 | 쓸 때 |
+|---|---|---|
+| [`sara`](sara/SKILL.md) | Goldstein, Eck & Spelman | 반복 민원/신고 분석 및 근본 해결 |
+| [`crime-triangle`](crime-triangle/SKILL.md) | Cohen & Felson, Clarke & Eck | 범죄 발생 조건 분해(가해자-대상-장소) |
+| [`cpted`](cpted/SKILL.md) | Jeffery, Newman | 환경설계로 범죄기회 제거 |
+| [`hot-spots`](hot-spots/SKILL.md) | Sherman, Weisburd | 범죄 집중 지점 기반 순찰 배치 |
+| [`ilp`](ilp/SKILL.md) | Ratcliffe | 정보분석 → 의사결정 → 영향 |
+
+### 축 2 — 조사·면담 (Investigation & Interview)
+
+| 프레임워크 | 창시자 | 쓸 때 |
+|---|---|---|
+| [`peace-model`](peace-model/SKILL.md) | 영국 경찰청 (1992) | 피의자/참고인 윤리적 조사면담 |
+| [`cognitive-interview`](cognitive-interview/SKILL.md) | Fisher & Geiselman | 피해자/목격자 기억 인출 최대화 |
+
+### 축 3 — 현장대응·위기 (Field Response & Crisis)
+
+| 프레임워크 | 창시자 | 쓸 때 |
+|---|---|---|
+| [`bcsm`](bcsm/SKILL.md) | FBI (Vecchi, Van Hasselt) | 자살/인질/농성 등 위기협상 |
+| [`icat`](icat/SKILL.md) | PERF (미국경찰연구포럼) | 단계적 대응, 디에스컬레이션 |
+
+### 축 4 — 정당성·지역사회 (Legitimacy & Community)
+
+| 프레임워크 | 창시자 | 쓸 때 |
+|---|---|---|
+| [`procedural-justice`](procedural-justice/SKILL.md) | Tom Tyler | 경찰 신뢰·정당성 진단 및 개선 |
+| [`cop`](cop/SKILL.md) | Goldstein, Trojanowicz | 지역사회 협력 치안 설계 |
+| [`broken-windows`](broken-windows/SKILL.md) | Wilson & Kelling (비판적 재해석) | 무질서 대응의 함정 이해 |
+
+### 메타 라우터
+- [`police`](police/SKILL.md) — 상황 입력 → 프레임워크 선택/시퀀싱
+
+---
+
+## 설치
+
+```bash
+# 전체 툴킷 클론
+git clone https://github.com/ironyjk/police-frameworks.git ~/.claude/skills/police-frameworks
+
+# 또는 install.sh 사용
+curl -sL https://raw.githubusercontent.com/ironyjk/police-frameworks/main/install.sh | bash
+```
+
+각 프레임워크는 독립적인 Claude Code Skill입니다. 개별 호출하거나 `/police` 메타 라우터를 통해 사용할 수 있습니다.
+
+---
+
+## 사용 예시
+
+### 메타 라우터 사용
+
+```
+/police
+situation: 이천 산업단지에서 새벽 시간대 절도 신고가 3개월째 증가 중입니다.
+```
+
+→ 라우터가 "반복 패턴 문제"로 판단하고 **SARA → Crime Triangle → Hot Spots → CPTED** 순서로 파이프라인을 구성합니다.
+
+### 개별 프레임워크 사용
+
+```
+/sara
+problem: 역 앞 노숙인 관련 민원 반복
+```
+
+---
+
+## 경찰발전협의회(경발협) 활용 가이드
+
+경찰발전협의회가 이 툴킷을 활용할 수 있는 대표 시나리오:
+
+**1. 반복 민원 안건 분석**
+- `sara`로 문제 정의 → `crime-triangle`로 원인 분해 → 개입 대안 도출
+- 단순 "순찰 강화" 결론에서 벗어나 환경·대상·가해자 측 개입 옵션 비교
+
+**2. 환경 안전 점검**
+- `cpted` 체크리스트로 사각지대, 조명, 시야확보, 영역성 진단
+- 주민 제안과 설계 원칙을 연결
+
+**3. 지역사회 신뢰 진단**
+- `procedural-justice` 4요소(발언권·중립성·존중·신뢰)로 사례 평가
+- "주민이 왜 경찰을 신뢰하지 않는가"를 구조적으로 분석
+
+**4. 순찰 배치 건의**
+- `hot-spots`+`ilp`로 데이터 기반 순찰 제안서 작성
+- 감(感)에 기대지 않는 근거 있는 제안
+
+---
+
+## 설계 원칙
+
+1. **근거 기반만** — 수록된 모든 프레임워크는 동료심사 연구 또는 공식 교리(FBI, 영국 경찰청, PERF, 내무부)에 기반함
+2. **강압 기법 배제** — Reid 기법 등 자백 유도형 기법은 의도적으로 제외. PEACE 모델이 윤리적 대안
+3. **한국 맥락 우선** — 예시, 용어, 적용 노트는 단순 번역이 아닌 한국 경찰(경찰청, 지구대, 경찰발전협의회) 맥락으로 재작성
+4. **효율보다 정당성** — 절차적 정의 연구는 "경찰이 *어떻게* 행동하는가"가 "*무엇*을 달성하는가"보다 중요하다는 것을 보여줌. 이 툴킷은 그 원칙을 반영
+
+---
+
+## 면책 조항
+
+이 프로젝트는 **학습·토의 도구**입니다. 실제 법집행 상황에서는 소속 기관의 지침, 훈령, 법령이 우선합니다. 위기 상황에서는 반드시 훈련된 협상관, 정신건강 전문가, 지휘부의 판단을 따라야 합니다.
+
+---
+
+## 기여
+
+이 프로젝트는 경찰발전협의회 활동을 지원하기 위해 시작되었습니다. 한국 경찰 현장에서 쓸만한 프레임워크 추가, 사례 개선, 번역 수정 등 모든 기여를 환영합니다.
+
+## 라이선스
+
+MIT — [LICENSE](LICENSE) 참조
