@@ -2,7 +2,7 @@
 
 > A meta-router and collection of 12 evidence-based policing frameworks for Claude Code.
 
-**Created by 최희철 (Choi Hee-cheol)** — AI engineer, member of the **경주경찰서 경찰발전협의회 (Gyeongju Police Station Police Development Council — a volunteer support organization)**. Built as a **reference resource for frontline Korean police officers**, not as an operational tool for the council itself. The council is a community support body; crime analysis and enforcement are the work of police officers.
+**Created by 최희철 (Choi Hee-cheol)** — software engineer, member of the **경주경찰서 경찰발전협의회 (Gyeongju Police Station Police Development Council — a volunteer support organization)**. Built as a **reference resource for frontline Korean police officers**, not as an operational tool for the council itself. The council is a community support body; crime analysis and enforcement are the work of police officers.
 
 **Police Frameworks** is to policing what [/think](https://github.com/) is to business strategy and [/howtotalk](https://github.com/) is to communication — an intelligence layer that helps police officers and supervisors select the right analytical tool for the situation.
 
@@ -96,7 +96,7 @@ problem: 경주역 주변 야간 취객 민원 반복
 
 **Who this is NOT for:**
 - This is **not a tool for police development councils** (경찰발전협의회) to use directly. The council is a volunteer support body — crime analysis, investigation, and enforcement are police work, not the council's.
-- The creator is a council member acting as an **AI engineer contributing a reference resource**, not as a law enforcement practitioner.
+- The creator is a council member acting as an **software engineer contributing a reference resource**, not as a law enforcement practitioner.
 - All frameworks should be validated against department policy, Korean law, and operational reality by qualified police personnel before application.
 
 ---

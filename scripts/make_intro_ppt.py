@@ -1,13 +1,16 @@
 """
-Police Frameworks — 소개 슬라이드 생성기
+Police Frameworks — 소개 슬라이드 생성기 (60대 경찰관 대상)
 
 사용법:
-    python scripts/make_intro_ppt.py
+    python scripts/generate_ppt_images.py   # 먼저 이미지 7장 생성 (ComfyUI 필요)
+    python scripts/make_intro_ppt.py        # 슬라이드 생성
 
 결과물:
-    docs/intro.pptx (14장, 16:9, 한글)
+    docs/intro.pptx (15장, 16:9, 한글)
 
-작성자: 최희철 (경주경찰서 경찰발전협의회 회원)
+구조: 사용 사례(4) → 이론(5) → 설치(3) → 부탁 (1) + 표지·차례 (2) = 15장
+
+작성자: 최희철 (경주경찰서 경찰발전협의회 회원, 소프트웨어 개발자)
 """
 
 from pathlib import Path
@@ -19,20 +22,26 @@ from pptx.enum.shapes import MSO_SHAPE
 
 
 # ──────────────────────────────────────────────────────────────
-# 색상 및 설정
+# 색상 및 설정 — 60대 가독성 우선
 # ──────────────────────────────────────────────────────────────
 
 NAVY = RGBColor(0x1A, 0x36, 0x5D)
+NAVY_DEEP = RGBColor(0x0F, 0x23, 0x3F)
 NAVY_LIGHT = RGBColor(0x2C, 0x51, 0x82)
-RED = RGBColor(0xC5, 0x30, 0x30)
+RED = RGBColor(0xDC, 0x26, 0x26)  # 경찰 빨강 계열
 GOLD = RGBColor(0xD6, 0x9E, 0x2E)
-GRAY_DARK = RGBColor(0x2D, 0x37, 0x48)
+GRAY_DARK = RGBColor(0x1F, 0x29, 0x37)  # 본문 기본색, 최대 대비
 GRAY_MID = RGBColor(0x4A, 0x55, 0x68)
 GRAY_LIGHT = RGBColor(0xE2, 0xE8, 0xF0)
-BG = RGBColor(0xF7, 0xFA, 0xFC)
+GRAY_PALE = RGBColor(0xF1, 0xF5, 0xF9)
+BG = RGBColor(0xFA, 0xFC, 0xFF)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+YELLOW_HL = RGBColor(0xFE, 0xF3, 0xC7)  # 강조 하이라이트
 
 FONT = "맑은 고딕"
+
+HERE = Path(__file__).resolve().parent
+IMG = HERE.parent / "docs" / "images"
 
 
 # ──────────────────────────────────────────────────────────────
@@ -46,12 +55,26 @@ def set_background(slide, color):
     bg.fill.solid()
     bg.fill.fore_color.rgb = color
     bg.line.fill.background()
-    bg.shadow.inherit = False
-    # 배경으로 보내기
     spTree = bg._element.getparent()
     spTree.remove(bg._element)
     spTree.insert(2, bg._element)
     return bg
+
+
+def add_image(slide, path, left, top, width, height):
+    if Path(path).exists():
+        pic = slide.shapes.add_picture(
+            str(path), Inches(left), Inches(top), Inches(width), Inches(height)
+        )
+        return pic
+    # fallback: placeholder box
+    box = slide.shapes.add_shape(
+        MSO_SHAPE.RECTANGLE, Inches(left), Inches(top), Inches(width), Inches(height)
+    )
+    box.fill.solid()
+    box.fill.fore_color.rgb = GRAY_LIGHT
+    box.line.color.rgb = GRAY_MID
+    return box
 
 
 def add_title_bar(slide, title, subtitle=None):
@@ -85,12 +108,13 @@ def add_title_bar(slide, title, subtitle=None):
         p2 = tf.add_paragraph()
         p2.text = subtitle
         p2.font.name = FONT
-        p2.font.size = Pt(13)
+        p2.font.size = Pt(14)
         p2.font.color.rgb = GRAY_LIGHT
 
 
 def add_text(slide, text, left, top, width, height,
-             size=16, bold=False, color=GRAY_DARK, align=PP_ALIGN.LEFT):
+             size=20, bold=False, color=GRAY_DARK, align=PP_ALIGN.LEFT,
+             line_spacing=1.25):
     tb = slide.shapes.add_textbox(
         Inches(left), Inches(top), Inches(width), Inches(height)
     )
@@ -102,6 +126,7 @@ def add_text(slide, text, left, top, width, height,
     for i, line in enumerate(lines):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.alignment = align
+        p.line_spacing = line_spacing
         p.text = line
         for run in p.runs:
             run.font.name = FONT
@@ -117,7 +142,7 @@ def add_text(slide, text, left, top, width, height,
 
 
 def add_bullets(slide, bullets, left, top, width, height,
-                size=16, color=GRAY_DARK, line_spacing=1.3):
+                size=18, color=GRAY_DARK, line_spacing=1.35):
     tb = slide.shapes.add_textbox(
         Inches(left), Inches(top), Inches(width), Inches(height)
     )
@@ -127,9 +152,9 @@ def add_bullets(slide, bullets, left, top, width, height,
     tf.margin_top = tf.margin_bottom = 0
     for i, b in enumerate(bullets):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.text = "• " + b if not b.startswith("  ") else b
+        p.text = "•  " + b
         p.line_spacing = line_spacing
-        p.space_after = Pt(4)
+        p.space_after = Pt(6)
         for run in p.runs:
             run.font.name = FONT
             run.font.size = Pt(size)
@@ -137,56 +162,46 @@ def add_bullets(slide, bullets, left, top, width, height,
     return tb
 
 
-def add_box(slide, title, body, left, top, width, height,
-            title_color=NAVY, border_color=NAVY):
+def add_footer(slide, page_no):
+    tb = slide.shapes.add_textbox(
+        Inches(0.5), Inches(7.12), Inches(12.3), Inches(0.35)
+    )
+    tf = tb.text_frame
+    tf.margin_left = tf.margin_right = 0
+    tf.margin_top = tf.margin_bottom = 0
+    p = tf.paragraphs[0]
+    p.text = f"Police Frameworks · /peel · 최희철 (경주경찰서 경찰발전협의회 회원, 소프트웨어 개발자) · {page_no}/15"
+    p.alignment = PP_ALIGN.RIGHT
+    p.font.name = FONT
+    p.font.size = Pt(10)
+    p.font.color.rgb = GRAY_MID
+
+
+def add_highlight_box(slide, text, left, top, width, height, fill=YELLOW_HL, size=18):
     box = slide.shapes.add_shape(
         MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(left), Inches(top), Inches(width), Inches(height)
+        Inches(left), Inches(top), Inches(width), Inches(height),
     )
     box.fill.solid()
-    box.fill.fore_color.rgb = WHITE
-    box.line.color.rgb = border_color
+    box.fill.fore_color.rgb = fill
+    box.line.color.rgb = GOLD
     box.line.width = Pt(1.2)
-    box.adjustments[0] = 0.08
-
+    box.adjustments[0] = 0.12
     tb = slide.shapes.add_textbox(
-        Inches(left + 0.2), Inches(top + 0.12),
-        Inches(width - 0.4), Inches(height - 0.24)
+        Inches(left + 0.25), Inches(top + 0.18),
+        Inches(width - 0.5), Inches(height - 0.36),
     )
     tf = tb.text_frame
     tf.word_wrap = True
     tf.margin_left = tf.margin_right = 0
     tf.margin_top = tf.margin_bottom = 0
-
     p = tf.paragraphs[0]
-    p.text = title
+    p.text = text
     p.font.name = FONT
-    p.font.size = Pt(15)
+    p.font.size = Pt(size)
     p.font.bold = True
-    p.font.color.rgb = title_color
-
-    for line in body.split("\n"):
-        p = tf.add_paragraph()
-        p.text = line
-        p.font.name = FONT
-        p.font.size = Pt(11)
-        p.font.color.rgb = GRAY_MID
-        p.line_spacing = 1.25
-
-
-def add_footer(slide):
-    tb = slide.shapes.add_textbox(
-        Inches(0.5), Inches(7.1), Inches(12.3), Inches(0.35)
-    )
-    tf = tb.text_frame
-    tf.margin_left = tf.margin_right = 0
-    tf.margin_top = tf.margin_bottom = 0
-    p = tf.paragraphs[0]
-    p.text = "Police Frameworks · /peel · 최희철 (경주경찰서 경찰발전협의회 회원)"
-    p.alignment = PP_ALIGN.RIGHT
-    p.font.name = FONT
-    p.font.size = Pt(9)
-    p.font.color.rgb = GRAY_MID
+    p.font.color.rgb = GRAY_DARK
+    p.line_spacing = 1.3
 
 
 # ──────────────────────────────────────────────────────────────
@@ -200,848 +215,761 @@ blank = prs.slide_layouts[6]
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 1 — 표지
+# Slide 1 — 표지 (cover.png 배경)
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
-set_background(s, NAVY)
+set_background(s, NAVY_DEEP)
 
-# 장식 줄
+# 풀블리드 배경 이미지
+add_image(s, IMG / "cover.png", 0, 0, 13.333, 7.5)
+
+# 하단 어둠 오버레이
+overlay = s.shapes.add_shape(
+    MSO_SHAPE.RECTANGLE, 0, Inches(3.7), prs.slide_width, Inches(3.8)
+)
+overlay.fill.solid()
+overlay.fill.fore_color.rgb = NAVY_DEEP
+overlay.line.fill.background()
+# 투명도 흉내: 덧칠
+# (pptx는 shape 투명도 제어가 번거로워, 단색 오버레이로 처리)
+
+# 상단 작은 라벨
+add_text(s, "POLICE FRAMEWORKS", 0.8, 0.6, 12, 0.4,
+         size=14, bold=True, color=GOLD)
+
+# 메인 제목
+add_text(s, "3개월째 똑같은 민원, 이번엔 순서부터",
+         0.8, 4.0, 12, 1.0, size=40, bold=True, color=WHITE)
+
+add_text(s, "경찰 프레임워크 툴킷  /  메타 라우터 /peel",
+         0.8, 4.95, 12, 0.55, size=22, color=GOLD)
+
+add_text(s,
+         "12개 근거기반 경찰활동 프레임워크를, 상황에 맞게 AI가 골라드립니다",
+         0.8, 5.6, 12, 0.5, size=16, color=GRAY_LIGHT)
+
+# 금색 구분선
 line = s.shapes.add_shape(
-    MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(2.7), Inches(1.8), Inches(0.08)
+    MSO_SHAPE.RECTANGLE, Inches(0.8), Inches(6.3), Inches(2.0), Inches(0.06)
 )
 line.fill.solid()
 line.fill.fore_color.rgb = GOLD
 line.line.fill.background()
 
-add_text(s, "POLICE FRAMEWORKS",
-         0.8, 1.9, 12, 0.8, size=16, bold=True, color=GOLD)
-add_text(s, "경찰 프레임워크 툴킷",
-         0.8, 2.85, 12, 1.2, size=54, bold=True, color=WHITE)
+# 저자
+add_text(s, "최희철", 0.8, 6.45, 12, 0.4, size=18, bold=True, color=WHITE)
 add_text(s,
-         "Claude Code를 위한 12개 근거기반 경찰활동 프레임워크\n"
-         "메타 라우터 /peel — 상황 입력 → 최적 프레임워크 선택·시퀀싱",
-         0.8, 4.4, 12, 1.2, size=18, color=GRAY_LIGHT)
-add_text(s,
-         "경찰 실무자에게 드리는 참고 자료 · 경주경찰서 경찰발전협의회 회원이 AI 전문가로서 작성",
-         0.8, 5.25, 12, 0.4, size=13, color=GOLD)
-
-# 하단 작성자 정보
-add_text(s, "작성 · 최희철 (AI 전문가)",
-         0.8, 6.15, 12, 0.4, size=16, bold=True, color=WHITE)
-add_text(s, "경주경찰서 경찰발전협의회 회원  ·  2026년 4월",
-         0.8, 6.5, 12, 0.4, size=13, color=GRAY_LIGHT)
+         "경주경찰서 경찰발전협의회 회원  ·  소프트웨어 개발자  ·  2026년 4월",
+         0.8, 6.78, 12, 0.35, size=13, color=GRAY_LIGHT)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 2 — 왜 만들었는가
+# Slide 2 — 오늘 이야기 순서
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "왜 만들었는가", "문제의식과 목적")
-
-add_text(s, "❶  문제의식",
-         0.6, 1.6, 12, 0.4, size=18, bold=True, color=NAVY)
-add_bullets(s, [
-    "한국 경찰 현장에는 뛰어난 실무 지식이 있지만, 이를 체계화한 분석 도구가 개인 머릿속에만 존재",
-    "영미권에서 40년 이상 축적된 근거기반 경찰활동 프레임워크는 한국어 자료가 적고 산재",
-    "일선 대응의 기본값이 \"순찰 강화\"와 \"단속\"에 머물러 제3의 대안 제시가 제한적",
-    "\"무관용\" 요구가 절차적 정의·지역사회 신뢰를 훼손해도 걸러낼 이론적 장치 부재",
-], 0.9, 2.1, 12, 2.0, size=14)
-
-add_text(s, "❷  이 도구의 위치 (작성자의 역할)",
-         0.6, 4.15, 12, 0.4, size=18, bold=True, color=NAVY)
-add_bullets(s, [
-    "작성자는 **AI 전문가**입니다. 경찰 실무자가 아닙니다.",
-    "경주경찰서 경찰발전협의회 회원이지만, 경발협은 봉사단체이며 범죄 분석·수사는 경찰의 몫",
-    "이 도구는 **경찰 실무자에게 드리는 참고 자료** — 경발협이 직접 쓰는 도구가 아님",
-    "12개 프레임워크를 한국 경찰 맥락으로 \"재작성\"해, 지구대·경찰서가 참고할 수 있게 정리",
-    "모든 적용은 경찰이 소속 기관 지침·법령·현장 판단과 결합해 검증해야 함",
-], 0.9, 4.65, 12, 2.3, size=13)
-
-add_footer(s)
-
-
-# ══════════════════════════════════════════════════════════════
-# Slide 3 — /peel 이란
-# ══════════════════════════════════════════════════════════════
-s = prs.slides.add_slide(blank)
-set_background(s, BG)
-add_title_bar(s, "/peel 이란 무엇인가", "메타 라우터의 개념")
+add_title_bar(s, "오늘 이야기 순서", "사례 먼저 보시고, 이론은 짧게, 설치는 천천히")
 
 add_text(s,
-         "상황을 설명하면, 12개 프레임워크 중 어떤 것을 어떤 순서로 적용할지\n"
-         "자동으로 선택·시퀀싱해 주는 지능형 라우팅 계층",
-         0.6, 1.55, 12.2, 1.0, size=17, bold=True, color=NAVY)
+         "바쁘신 분들을 위해 결론부터 말씀드리겠습니다.",
+         0.6, 1.7, 12, 0.5, size=20, bold=True, color=NAVY)
+add_text(s,
+         "30년 현장 경험을 부정하는 도구가 아닙니다.\n"
+         "여러분이 이미 머리로 하고 계신 일을, 한 장의 수첩처럼 정리해 드리는 도구입니다.",
+         0.6, 2.25, 12, 1.2, size=16, color=GRAY_MID)
 
-# 파이프라인 다이어그램
+# 3단계 플로우
 stages = [
-    ("상황 입력", "반복 민원, 현장 위기,\n조사 면담, 지역 불신…"),
-    ("문제 분류", "반복/단일, 사람/환경,\n사전/현장/사후"),
-    ("프레임워크 선정", "12개 중 2~4개 조합\n+ 제외 프레임워크 이유"),
-    ("파이프라인", "적용 순서 + 단계별\n체크리스트 제공"),
+    ("1", "먼저 사례 4가지", "경주 현장에서 바로\n있을 만한 이야기", RED),
+    ("2", "이론은 간단히", "12개 '공구'가 뭔지\n한눈에 보여드립니다", NAVY),
+    ("3", "설치는 천천히", "노트북에 어떻게 올리는지\n4단계로 알려드립니다", GOLD),
 ]
 x = 0.6
-for i, (t, b) in enumerate(stages):
-    add_box(s, t, b, x, 3.1, 2.85, 1.55)
-    x += 3.0
-    if i < 3:
-        arrow = s.shapes.add_shape(
-            MSO_SHAPE.RIGHT_ARROW,
-            Inches(x - 0.18), Inches(3.7), Inches(0.25), Inches(0.35)
-        )
-        arrow.fill.solid()
-        arrow.fill.fore_color.rgb = NAVY
-        arrow.line.fill.background()
+for num, title, desc, color in stages:
+    # 번호 원
+    circle = s.shapes.add_shape(
+        MSO_SHAPE.OVAL, Inches(x + 0.3), Inches(4.0), Inches(1.0), Inches(1.0)
+    )
+    circle.fill.solid()
+    circle.fill.fore_color.rgb = color
+    circle.line.fill.background()
+    add_text(s, num, x + 0.3, 4.12, 1.0, 0.8,
+             size=36, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 
-add_text(s, "❖  같은 계열 도구",
-         0.6, 5.1, 12, 0.4, size=14, bold=True, color=NAVY)
-add_bullets(s, [
-    "/think   — 경영 전략 프레임워크 메타 라우터 (47개, Porter/Drucker/BSC 등)",
-    "/counsel — 심리 상담 프레임워크 메타 라우터 (14개, CBT/ACT/IFS 등)",
-    "/peel    — 경찰활동 프레임워크 메타 라우터 (12개, 본 프로젝트)",
-], 0.9, 5.55, 12, 1.4, size=13)
+    # 박스
+    box = s.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(x), Inches(5.3), Inches(4.0), Inches(1.6)
+    )
+    box.fill.solid()
+    box.fill.fore_color.rgb = WHITE
+    box.line.color.rgb = color
+    box.line.width = Pt(2)
+    box.adjustments[0] = 0.1
 
-add_footer(s)
+    add_text(s, title, x + 0.2, 5.4, 3.6, 0.5,
+             size=20, bold=True, color=color, align=PP_ALIGN.CENTER)
+    add_text(s, desc, x + 0.2, 5.95, 3.6, 0.9,
+             size=14, color=GRAY_MID, align=PP_ALIGN.CENTER)
+    x += 4.3
 
-
-# ══════════════════════════════════════════════════════════════
-# Slide 4 — 왜 /peel 인가 (Robert Peel)
-# ══════════════════════════════════════════════════════════════
-s = prs.slides.add_slide(blank)
-set_background(s, BG)
-add_title_bar(s, "왜 /peel 인가", "현대 경찰의 창시자, Sir Robert Peel (1788–1850)")
-
-add_text(s,
-         "1829년 런던경찰청 창설, 현대 경찰의 아버지",
-         0.6, 1.55, 12, 0.4, size=16, bold=True, color=NAVY)
-add_text(s,
-         "그의 9대 원칙(Peelian Principles)은 200년이 지난 지금도\n"
-         "절차적 정의·지역사회 경찰활동·정당성 이론의 뿌리입니다.",
-         0.6, 2.0, 12, 0.8, size=13, color=GRAY_MID)
-
-# 핵심 3원칙 박스
-add_box(s, "제1원칙 — 예방",
-        "경찰의 기본 임무는 범죄와\n무질서의 예방이다.\n무력 진압이 아니다.",
-        0.6, 3.15, 4.0, 1.7, title_color=RED)
-add_box(s, "제7원칙 — 경찰=시민",
-        "\"경찰은 시민이고\n시민은 경찰이다.\"\n경찰은 시민의 대리인일 뿐.",
-        4.77, 3.15, 4.0, 1.7, title_color=RED)
-add_box(s, "제9원칙 — 측정",
-        "효율성의 척도는 범죄의 부재이지\n가시적 경찰 활동이 아니다.\n조용한 동네 = 성공한 경찰.",
-        8.93, 3.15, 4.0, 1.7, title_color=RED)
-
-add_text(s, "❖  /peel 이라는 이름의 이유",
-         0.6, 5.15, 12, 0.4, size=14, bold=True, color=NAVY)
-add_bullets(s, [
-    "경찰관이 /police 를 입력해 자기 자신을 호출하는 어색함을 피합니다",
-    "이 툴킷 전체의 철학적 뿌리를 계승 — PEACE, ICAT, COP, 절차적 정의 모두 Peel 제7원칙으로 수렴",
-    "짧고, 역사적 무게가 있고, 자기지시어가 아니고, 기억하기 쉬움",
-], 0.9, 5.6, 12, 1.5, size=13)
-
-add_footer(s)
+add_footer(s, 2)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 5 — 4개 축 × 12개 프레임워크 (개관)
+# Slide 3 — 사례 1: 성건동 공원 청소년
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "4개 축 × 12개 프레임워크", "Police Frameworks 전체 지도")
+add_title_bar(s, "사례 1 · 성건동 공원", "3개월째 같은 민원, 어떻게 풀까")
 
-axes = [
-    ("축 1  ·  문제지향 경찰활동",
-     "반복 문제의 근본 해결 · 예방 설계",
+# 왼쪽: 이미지
+add_image(s, IMG / "case1_park.png", 0.5, 1.5, 6.0, 3.4)
+
+# 오른쪽: 상황 요약
+add_text(s, "이런 상황 있으시죠?", 6.85, 1.5, 6.2, 0.5,
+         size=20, bold=True, color=NAVY)
+situation = (
+    "성건동 근린공원, 밤 10시부터 새벽 2시.\n"
+    "고등학생 대여섯 명이 술·담배·소란.\n"
+    "순찰 차가 가면 흩어지고, 떠나면 복귀.\n"
+    "민원은 3개월째 14건 쌓였습니다.\n\n"
+    "한쪽 주민은 \"강하게 단속해라\"\n"
+    "한쪽 주민은 \"우리 애들 낙인찍지 마라\""
+)
+add_text(s, situation, 6.85, 2.1, 6.2, 3.0,
+         size=15, color=GRAY_DARK, line_spacing=1.35)
+
+# 하단 강조 박스 — 킬러 메시지
+add_highlight_box(
+    s,
+    "단속만으로는 이 아이들을 옆 동네 공원으로 옮길 뿐입니다.\n"
+    "/peel 이 권하는 건 순찰 강화가 아니라 — 조명 · 학교 · 편의점 · 존중 네 가지의 동시 개입입니다.",
+    0.6, 5.3, 12.1, 1.6, size=16
+)
+
+add_footer(s, 3)
+
+
+# ══════════════════════════════════════════════════════════════
+# Slide 4 — 사례 2: 황리단길 야간
+# ══════════════════════════════════════════════════════════════
+s = prs.slides.add_slide(blank)
+set_background(s, BG)
+add_title_bar(s, "사례 2 · 황리단길 야간", "관광지가 된 뒤, 순찰 인력은 그대로")
+
+# 오른쪽 이미지 (구도 변화)
+add_image(s, IMG / "case2_hwangnidan.png", 6.85, 1.5, 6.0, 3.4)
+
+add_text(s, "이번엔 이런 상황입니다", 0.6, 1.5, 6.2, 0.5,
+         size=20, bold=True, color=NAVY)
+situation = (
+    "황리단길이 관광명소가 된 지 수년.\n"
+    "주말 밤마다 관광객·상인·주민이 섞입니다.\n"
+    "야간 주취 민원, 주차 마찰, 소음 신고.\n\n"
+    "황남파출소 관할 인력은 그대로인데,\n"
+    "유동 인구는 몇 배로 늘었습니다.\n"
+    "전부 순찰로 막을 수 있는 규모가 아닙니다."
+)
+add_text(s, situation, 0.6, 2.1, 6.2, 3.0,
+         size=15, color=GRAY_DARK, line_spacing=1.35)
+
+add_highlight_box(
+    s,
+    "이럴 때 /peel 은 Hot Spots(집중 지점)로 시간·장소를 좁히고,\n"
+    "상인·주민·경찰 셋이 함께 움직이는 COP(지역사회 경찰활동)로 정리해 드립니다.",
+    0.6, 5.3, 12.1, 1.6, size=16
+)
+
+add_footer(s, 4)
+
+
+# ══════════════════════════════════════════════════════════════
+# Slide 5 — 사례 3: 외동산단 새벽 절도
+# ══════════════════════════════════════════════════════════════
+s = prs.slides.add_slide(blank)
+set_background(s, BG)
+add_title_bar(s, "사례 3 · 외동산단 새벽 절도", "순찰보다 조명이 더 싸고 강하다")
+
+add_image(s, IMG / "case3_industrial.png", 0.5, 1.5, 6.0, 3.4)
+
+add_text(s, "또 다른 흔한 상황", 6.85, 1.5, 6.2, 0.5,
+         size=20, bold=True, color=NAVY)
+situation = (
+    "외동읍 산업단지 공장 주차장.\n"
+    "새벽 시간 차량 내 물품 절도가\n"
+    "3개월간 12건 접수.\n\n"
+    "지금까지 대응은 — 순찰 강화.\n"
+    "결과는 — 순찰 빠지면 다시 발생."
+)
+add_text(s, situation, 6.85, 2.1, 6.2, 2.8,
+         size=15, color=GRAY_DARK, line_spacing=1.35)
+
+add_highlight_box(
+    s,
+    "이 경우 /peel 은 CPTED(환경 설계)부터 점검합니다.\n"
+    "조명 교체, CCTV 각도 조정, 관리 주체 협조 — 순찰 강화보다 장기적으로 더 싸고 더 강합니다.",
+    0.6, 5.3, 12.1, 1.6, size=16
+)
+
+add_footer(s, 5)
+
+
+# ══════════════════════════════════════════════════════════════
+# Slide 6 — 사례 4: "경찰이 무례하다" 민원
+# ══════════════════════════════════════════════════════════════
+s = prs.slides.add_slide(blank)
+set_background(s, BG)
+add_title_bar(s, "사례 4 · 규정대로 했는데 민원", "30년 경력이 가장 억울한 순간")
+
+add_image(s, IMG / "case4_station.png", 6.85, 1.5, 6.0, 3.4)
+
+add_text(s, "이게 제일 억울하지 않으십니까", 0.6, 1.5, 6.2, 0.5,
+         size=20, bold=True, color=NAVY)
+situation = (
+    "지구대에서 주취자를 규정대로 처리.\n"
+    "며칠 뒤 \"경찰이 고압적이었다\" 민원.\n\n"
+    "내부적으로는 절차 다 지켰습니다.\n"
+    "그런데 왜 민원이 나왔을까요?\n\n"
+    "Tom Tyler(미국 사회심리학자) 연구:\n"
+    "시민은 \"결과\"보다 \"과정\"을 기억합니다."
+)
+add_text(s, situation, 0.6, 2.1, 6.2, 3.0,
+         size=15, color=GRAY_DARK, line_spacing=1.35)
+
+add_highlight_box(
+    s,
+    "절차적 정의 4가지: 발언권 · 중립성 · 존중 · 신뢰.\n"
+    "하나라도 빠지면 — 규정을 지켰어도 — 신뢰는 깨집니다. /peel 이 이걸 체크해 드립니다.",
+    0.6, 5.3, 12.1, 1.6, size=16
+)
+
+add_footer(s, 6)
+
+
+# ══════════════════════════════════════════════════════════════
+# Slide 7 — 이게 뭔데요? (공구함 비유)
+# ══════════════════════════════════════════════════════════════
+s = prs.slides.add_slide(blank)
+set_background(s, BG)
+add_title_bar(s, "그래서 이게 뭔가요?", "30년 수첩을, 한 장으로")
+
+add_image(s, IMG / "toolbox.png", 6.85, 1.5, 6.0, 4.5)
+
+add_text(s,
+         "고참 반장님의 수첩을 상상해 보십시오.",
+         0.6, 1.6, 6.2, 0.6, size=20, bold=True, color=NAVY)
+
+body = (
+    "30년 현장을 뛴 반장이\n"
+    "\"이런 민원 들어오면 이렇게 풀어라\"\n"
+    "라고 적어둔 노트가 있다고 합시다.\n\n"
+    "이 도구는 그 노트를\n"
+    "— 세계 여러 나라 경찰 연구로 검증된 —\n"
+    "12개의 공구로 정리한 것입니다.\n\n"
+    "그리고 /peel 이라는 안내 데스크가\n"
+    "상황에 맞는 공구를 골라드립니다."
+)
+add_text(s, body, 0.6, 2.3, 6.2, 4.0,
+         size=16, color=GRAY_DARK, line_spacing=1.4)
+
+add_footer(s, 7)
+
+
+# ══════════════════════════════════════════════════════════════
+# Slide 8 — 12개 공구함 한눈에
+# ══════════════════════════════════════════════════════════════
+s = prs.slides.add_slide(blank)
+set_background(s, BG)
+add_title_bar(s, "12개 공구, 4개 서랍", "볼트엔 렌치, 나사엔 드라이버")
+
+drawers = [
+    ("문제 패턴을 분석할 때",
      ["SARA", "Crime Triangle", "CPTED", "Hot Spots", "ILP"],
+     "반복 민원, 핫스팟, 환경 개선",
      NAVY),
-    ("축 2  ·  조사 · 면담",
-     "비강압적 정보 수집 · 기억 인출",
-     ["PEACE Model", "Cognitive Interview"],
+    ("조사 · 면담할 때",
+     ["PEACE 모델", "인지 면담"],
+     "피의자·피해자 진술, 강압 없는 면담",
      NAVY_LIGHT),
-    ("축 3  ·  현장 대응 · 위기",
-     "디에스컬레이션 · 위기 협상",
+    ("현장 위기 대응할 때",
      ["BCSM", "ICAT"],
+     "자살·인질·정신건강 위기, 물리력 최소화",
      RED),
-    ("축 4  ·  정당성 · 지역사회",
-     "신뢰 · 협력 · 무질서 함정 회피",
-     ["Procedural Justice", "COP", "Broken Windows (비판적)"],
+    ("신뢰 · 지역사회",
+     ["절차적 정의", "COP", "깨진 유리창(비판)"],
+     "민원 응대, 주민 관계, \"단속 요구\" 검토",
      GOLD),
 ]
 
 y = 1.55
-for axis_name, axis_desc, fws, color in axes:
-    # 축 제목 박스
+for title, tools, desc, color in drawers:
+    # 서랍 제목 바
     bar = s.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(0.6), Inches(y), Inches(4.4), Inches(1.25)
+        MSO_SHAPE.RECTANGLE, Inches(0.6), Inches(y), Inches(4.5), Inches(1.3)
     )
     bar.fill.solid()
     bar.fill.fore_color.rgb = color
     bar.line.fill.background()
-    add_text(s, axis_name, 0.75, y + 0.18, 4.2, 0.4,
-             size=15, bold=True, color=WHITE)
-    add_text(s, axis_desc, 0.75, y + 0.68, 4.2, 0.4,
-             size=11, color=GRAY_LIGHT)
-    # 프레임워크 chips
-    cx = 5.25
-    for fw in fws:
+
+    add_text(s, title, 0.78, y + 0.2, 4.3, 0.4,
+             size=17, bold=True, color=WHITE)
+    add_text(s, desc, 0.78, y + 0.75, 4.3, 0.4,
+             size=12, color=GRAY_LIGHT)
+
+    # 공구 목록
+    tx = 5.35
+    for t in tools:
+        chip_w = 2.4
         chip = s.shapes.add_shape(
             MSO_SHAPE.ROUNDED_RECTANGLE,
-            Inches(cx), Inches(y + 0.28), Inches(2.35), Inches(0.7)
+            Inches(tx), Inches(y + 0.35), Inches(chip_w), Inches(0.6),
         )
         chip.fill.solid()
         chip.fill.fore_color.rgb = WHITE
         chip.line.color.rgb = color
-        chip.line.width = Pt(1.5)
+        chip.line.width = Pt(1.8)
         chip.adjustments[0] = 0.3
-        add_text(s, fw, cx + 0.1, y + 0.42, 2.15, 0.4,
-                 size=12, bold=True, color=color, align=PP_ALIGN.CENTER)
-        cx += 2.5
+        add_text(s, t, tx + 0.05, y + 0.48, chip_w - 0.1, 0.4,
+                 size=14, bold=True, color=color, align=PP_ALIGN.CENTER)
+        tx += chip_w + 0.15
+
     y += 1.42
 
-add_footer(s)
+add_footer(s, 8)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 6 — 축 1 문제지향
+# Slide 9 — 서랍 1 상세: 문제 패턴 분석
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "축 1 · 문제지향 경찰활동", "Problem-Oriented Policing — 반복 문제의 근본 해결")
+add_title_bar(s, "서랍 1 · 문제 패턴 분석", "반복되는 민원의 뿌리를 찾을 때")
 
-fws = [
+tools = [
     ("SARA",
-     "Goldstein 1979 · Eck & Spelman 1987",
-     "Scanning → Analysis → Response → Assessment.\n"
-     "4단계 반복 사이클로 반복 민원·문제를\n근본적으로 해결."),
-    ("Crime Triangle",
-     "Cohen & Felson · Clarke & Eck",
-     "가해자·대상·장소 3요소 + 각 억제자.\n"
-     "6박스 분해로 \"어디를 움직이면\n가장 효과적인가\" 파악."),
+     "탐색 → 분석 → 대응 → 평가 4단계.\n반복 민원을 근본부터 푸는 기본 순서표."),
+    ("범죄 삼각형",
+     "가해자·대상·장소 세 꼭짓점으로 쪼개기.\n어디를 움직이면 가장 효과적인지 본다."),
     ("CPTED",
-     "Jeffery 1971 · Newman · Crowe",
-     "자연감시·접근통제·영역성·활동지원·\n유지관리·표적경화 6원칙.\n환경설계로 범죄 기회 제거."),
+     "환경 설계로 범죄 기회 제거.\n조명 · 시야 · 관리 주체 · 활동 유치."),
     ("Hot Spots",
-     "Sherman · Weisburd",
-     "범죄의 장소 집중 법칙(상위 5%에 50%).\n"
-     "Koper 15분 규칙.\n28개 RCT 메타분석 효과 입증."),
+     "범죄는 관할 전역이 아니라 몇 블록에 집중.\n그 블록에 15분씩 머물면 효과가 급증."),
     ("ILP",
-     "Ratcliffe · UK NIM",
-     "Intelligence-Led Policing.\n"
-     "3i 모델(Interpret-Influence-Impact).\n상습자·반복피해자·핫스팟 집중."),
+     "데이터로 우선순위 정하기.\n상습 가해자 · 반복 피해자 · 핫스팟."),
 ]
 
-positions = [
-    (0.6, 1.6, 4.0, 2.6),
-    (4.77, 1.6, 4.0, 2.6),
-    (8.93, 1.6, 4.0, 2.6),
-    (0.6, 4.35, 4.0, 2.6),
-    (4.77, 4.35, 4.0, 2.6),
-]
-
-for (name, author, body), (x, y, w, h) in zip(fws, positions):
+y = 1.55
+for name, desc in tools:
     box = s.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE, Inches(x), Inches(y), Inches(w), Inches(h)
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(0.6), Inches(y), Inches(12.1), Inches(1.0)
     )
     box.fill.solid()
     box.fill.fore_color.rgb = WHITE
     box.line.color.rgb = NAVY
     box.line.width = Pt(1.2)
-    box.adjustments[0] = 0.06
+    box.adjustments[0] = 0.15
 
-    tb = s.shapes.add_textbox(
-        Inches(x + 0.25), Inches(y + 0.2), Inches(w - 0.5), Inches(h - 0.4)
+    # 왼쪽 이름 박스
+    name_bar = s.shapes.add_shape(
+        MSO_SHAPE.RECTANGLE,
+        Inches(0.6), Inches(y), Inches(2.8), Inches(1.0),
     )
-    tf = tb.text_frame
-    tf.word_wrap = True
-    p = tf.paragraphs[0]
-    p.text = name
-    p.font.name = FONT
-    p.font.size = Pt(20)
-    p.font.bold = True
-    p.font.color.rgb = NAVY
+    name_bar.fill.solid()
+    name_bar.fill.fore_color.rgb = NAVY
+    name_bar.line.fill.background()
+    add_text(s, name, 0.78, y + 0.28, 2.6, 0.5,
+             size=18, bold=True, color=WHITE)
 
-    p = tf.add_paragraph()
-    p.text = author
-    p.font.name = FONT
-    p.font.size = Pt(10)
-    p.font.italic = True
-    p.font.color.rgb = GRAY_MID
-    p.space_after = Pt(8)
+    # 오른쪽 설명
+    add_text(s, desc, 3.6, y + 0.15, 9.0, 0.85,
+             size=14, color=GRAY_DARK, line_spacing=1.3)
+    y += 1.08
 
-    for line in body.split("\n"):
-        p = tf.add_paragraph()
-        p.text = line
-        p.font.name = FONT
-        p.font.size = Pt(12)
-        p.font.color.rgb = GRAY_DARK
-        p.line_spacing = 1.25
-
-# 하이라이트 박스
-add_box(s, "축 1의 핵심 메시지",
-        "\"순찰 강화\"는 많은 경우 비용 대비 효과가\n낮습니다. 분석 → 환경 개입 → 제3자 협조가\n지속가능한 해결의 길입니다.",
-        8.93, 4.35, 4.0, 2.6, title_color=RED, border_color=RED)
-
-add_footer(s)
+add_footer(s, 9)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 7 — 축 2 조사/면담
+# Slide 10 — 서랍 2·3 상세: 조사·면담, 현장 위기
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "축 2 · 조사 · 면담", "Investigative Interviewing — 강압이 아닌 정보 수집")
+add_title_bar(s, "서랍 2·3 · 조사와 위기", "사람과 마주 앉을 때, 현장이 급할 때")
 
-# PEACE 박스
+# 서랍 2
+add_text(s, "서랍 2 — 조사 · 면담", 0.6, 1.55, 12, 0.4,
+         size=18, bold=True, color=NAVY_LIGHT)
+
 box = s.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.6), Inches(1.55),
-    Inches(6.05), Inches(5.4)
+    MSO_SHAPE.ROUNDED_RECTANGLE,
+    Inches(0.6), Inches(2.0), Inches(12.1), Inches(2.0),
 )
 box.fill.solid()
 box.fill.fore_color.rgb = WHITE
-box.line.color.rgb = NAVY
+box.line.color.rgb = NAVY_LIGHT
 box.line.width = Pt(1.5)
-box.adjustments[0] = 0.04
+box.adjustments[0] = 0.06
 
-add_text(s, "PEACE Model", 0.85, 1.75, 5.5, 0.5,
-         size=24, bold=True, color=NAVY)
-add_text(s, "UK Home Office, 1992 · 허위자백 스캔들에 대한 응답",
-         0.85, 2.25, 5.5, 0.4, size=11, color=GRAY_MID)
+add_text(s, "PEACE 모델  ·  1992년 영국에서 만든 비강압 면담법",
+         0.85, 2.1, 11.8, 0.4, size=16, bold=True, color=NAVY)
+add_text(s,
+         "Planning(준비) → Engage(관계 맺기) → Account(진술 듣기) → Closure(마무리) → Evaluate(평가).\n"
+         "자백을 압박하지 않고, 진실을 수집하는 윤리적 방법입니다. Reid 같은 강압 기법은 제외했습니다.",
+         0.85, 2.48, 11.8, 0.7, size=13, color=GRAY_MID, line_spacing=1.3)
 
-peace = [
-    ("P  Planning & Preparation", "면담 성공의 70%는 준비 단계에서 결정"),
-    ("E  Engage & Explain", "Rapport 구축, 목적·권리 설명"),
-    ("A  Account / Clarify / Challenge", "Free recall → 질문 → 전략적 증거 제시"),
-    ("C  Closure", "질서 있는 종결, 요약, 다음 단계 안내"),
-    ("E  Evaluation", "면담 후 학습 — 가장 자주 생략되는 단계"),
-]
-y = 2.75
-for title, desc in peace:
-    add_text(s, title, 0.85, y, 5.5, 0.35, size=14, bold=True, color=NAVY_LIGHT)
-    add_text(s, desc, 0.85, y + 0.32, 5.5, 0.35, size=11, color=GRAY_MID)
-    y += 0.75
+add_text(s, "인지 면담  ·  피해자·목격자 기억을 끌어내는 기법",
+         0.85, 3.25, 11.8, 0.4, size=16, bold=True, color=NAVY)
+add_text(s,
+         "당시 상황을 떠올리게 하고, 사소한 것도 다 말하게 하고, 역순으로 되짚기. 메타분석: 25~85% 더 많은 정확한 정보.",
+         0.85, 3.6, 11.8, 0.4, size=13, color=GRAY_MID)
 
-add_text(s, "※  Reid 기법 같은 압박·유도 자백 유도는 이 툴킷에서 의도적으로 배제",
-         0.85, 6.55, 5.5, 0.35, size=10, bold=True, color=RED)
+# 서랍 3
+add_text(s, "서랍 3 — 현장 위기", 0.6, 4.25, 12, 0.4,
+         size=18, bold=True, color=RED)
 
-# Cognitive Interview 박스
 box2 = s.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.85), Inches(1.55),
-    Inches(6.05), Inches(5.4)
+    MSO_SHAPE.ROUNDED_RECTANGLE,
+    Inches(0.6), Inches(4.7), Inches(12.1), Inches(2.0),
 )
 box2.fill.solid()
 box2.fill.fore_color.rgb = WHITE
-box2.line.color.rgb = NAVY
+box2.line.color.rgb = RED
 box2.line.width = Pt(1.5)
-box2.adjustments[0] = 0.04
+box2.adjustments[0] = 0.06
 
-add_text(s, "Cognitive Interview", 7.1, 1.75, 5.5, 0.5,
-         size=24, bold=True, color=NAVY)
-add_text(s, "Fisher & Geiselman, 1984 · 피해자·목격자 기억 인출 최대화",
-         7.1, 2.25, 5.5, 0.4, size=11, color=GRAY_MID)
+add_text(s, "BCSM  ·  FBI 위기협상 5단계 계단 모델",
+         0.85, 4.8, 11.8, 0.4, size=16, bold=True, color=RED)
+add_text(s,
+         "경청 → 공감 → 신뢰 → 영향 → 행동 변화. 계단을 건너뛰면 설득이 먹히지 않습니다. 자살·인질·농성에 사용.",
+         0.85, 5.18, 11.8, 0.4, size=13, color=GRAY_MID)
 
-ci = [
-    ("맥락 복원", "사건 당시의 물리·감정 환경을 마음속에서 재현"),
-    ("모든 세부 보고", "사소하거나 확신 없는 정보도 검열 없이 보고"),
-    ("역순 회상", "끝에서부터 거꾸로 — 스크립트 우회, 일관성 검증"),
-    ("관점 전환", "다른 사람 시점에서 재구성 (아동에는 신중히)"),
-]
-y = 2.75
-for title, desc in ci:
-    add_text(s, title, 7.1, y, 5.5, 0.35, size=14, bold=True, color=NAVY_LIGHT)
-    add_text(s, desc, 7.1, y + 0.32, 5.5, 0.35, size=11, color=GRAY_MID)
-    y += 0.8
+add_text(s, "ICAT  ·  미국 경찰연구포럼 디에스컬레이션 훈련",
+         0.85, 5.68, 11.8, 0.4, size=16, bold=True, color=RED)
+add_text(s,
+         "시간을 만들고 · 거리를 두고 · 엄폐하고. 루이빌 실험: 물리력 28% ↓, 시민 부상 26% ↓, 경찰관 부상 36% ↓.",
+         0.85, 6.05, 11.8, 0.5, size=13, color=GRAY_MID, line_spacing=1.3)
 
-add_text(s, "메타분석: 일반 면담 대비 25~85% 더 많은 정확한 정보",
-         7.1, 6.55, 5.5, 0.35, size=10, bold=True, color=RED)
-
-add_footer(s)
+add_footer(s, 10)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 8 — 축 3 현장대응/위기
+# Slide 11 — 서랍 4 상세: 정당성·지역사회
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "축 3 · 현장 대응 · 위기", "디에스컬레이션과 위기 협상")
+add_title_bar(s, "서랍 4 · 정당성과 지역사회", "규정만으로는 부족할 때")
 
-# BCSM 박스
-box = s.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.6), Inches(1.55),
-    Inches(6.05), Inches(5.4)
-)
-box.fill.solid()
-box.fill.fore_color.rgb = WHITE
-box.line.color.rgb = NAVY
-box.line.width = Pt(1.5)
-box.adjustments[0] = 0.04
+# 절차적 정의 4원칙 카드
+add_text(s, "절차적 정의 — 네 가지를 다 지키셔야 신뢰가 쌓입니다",
+         0.6, 1.55, 12, 0.4, size=17, bold=True, color=NAVY)
 
-add_text(s, "BCSM", 0.85, 1.75, 5.5, 0.5, size=24, bold=True, color=NAVY)
-add_text(s, "FBI Crisis Negotiation Unit · Behavioral Change Stairway Model",
-         0.85, 2.25, 5.5, 0.4, size=11, color=GRAY_MID)
-add_text(s,
-         "자살·인질·농성 등 위기 협상 5단계 계단 모델.\n"
-         "핵심: 계단을 건너뛰면 마지막에 도달할 수 없다.",
-         0.85, 2.6, 5.5, 0.8, size=12, color=GRAY_DARK)
-
-stairway = [
-    ("5", "Behavioral Change", "행동 변화"),
-    ("4", "Influence", "영향 — 제안이 받아들여짐"),
-    ("3", "Rapport", "신뢰 구축"),
-    ("2", "Empathy", "공감 — 이해받았다는 느낌"),
-    ("1", "Active Listening", "능동적 경청"),
+pj = [
+    ("Voice", "발언권", "시민이 자기 입장을\n충분히 말할 기회"),
+    ("Neutrality", "중립성", "사실과 규칙에 기반한\n일관된 판단"),
+    ("Respect", "존중", "존엄을 침해하지 않는\n언어와 태도"),
+    ("Trust", "신뢰", "선의로 시민 편에 선다는\n인상을 주기"),
 ]
-y = 3.6
-for num, en, kr in stairway:
-    step = s.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(0.85), Inches(y), Inches(5.55), Inches(0.55)
+x = 0.6
+for en, kr, desc in pj:
+    card = s.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(x), Inches(2.0), Inches(3.0), Inches(2.0)
     )
-    step.fill.solid()
-    step.fill.fore_color.rgb = NAVY_LIGHT if int(num) % 2 == 0 else NAVY
-    step.line.fill.background()
-    add_text(s, f"{num}  {en}  ·  {kr}", 1.0, y + 0.13, 5.3, 0.4,
-             size=12, bold=True, color=WHITE)
-    y += 0.62
+    card.fill.solid()
+    card.fill.fore_color.rgb = NAVY
+    card.line.color.rgb = GOLD
+    card.line.width = Pt(2)
+    card.adjustments[0] = 0.1
+    add_text(s, en, x + 0.1, 2.15, 2.8, 0.4,
+             size=13, bold=True, color=GOLD, align=PP_ALIGN.CENTER)
+    add_text(s, kr, x + 0.1, 2.5, 2.8, 0.5,
+             size=22, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    add_text(s, desc, x + 0.1, 3.1, 2.8, 0.9,
+             size=12, color=GRAY_LIGHT, align=PP_ALIGN.CENTER)
+    x += 3.15
 
-# ICAT 박스
-box2 = s.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(6.85), Inches(1.55),
-    Inches(6.05), Inches(5.4)
-)
-box2.fill.solid()
-box2.fill.fore_color.rgb = WHITE
-box2.line.color.rgb = NAVY
-box2.line.width = Pt(1.5)
-box2.adjustments[0] = 0.04
-
-add_text(s, "ICAT", 7.1, 1.75, 5.5, 0.5, size=24, bold=True, color=NAVY)
-add_text(s, "PERF, 2016 · 단계적 대응 · 디에스컬레이션 훈련",
-         7.1, 2.25, 5.5, 0.4, size=11, color=GRAY_MID)
-add_text(s,
-         "Integrating Communications, Assessment, and Tactics.\n"
-         "정신질환·비무기 저항에 물리력 회피 훈련.",
-         7.1, 2.6, 5.5, 0.8, size=12, color=GRAY_DARK)
-
-add_text(s, "핵심 원칙 · 시간 · 거리 · 엄폐",
-         7.1, 3.55, 5.5, 0.4, size=14, bold=True, color=NAVY_LIGHT)
-add_bullets(s, [
-    "Time — 서두르지 않고 시간 만들기",
-    "Distance — 물러서기는 패배가 아닌 전술",
-    "Cover — 엄폐로 물리력 사용 압박 감소",
-    "CDMM — 정보·위협·권한·목표·옵션·행동 순환",
-], 7.2, 3.95, 5.5, 2.0, size=11)
-
-add_text(s, "루이빌 PD 실증: 물리력 28% ↓, 시민 부상 26% ↓, 경찰관 부상 36% ↓",
-         7.1, 6.55, 5.5, 0.35, size=10, bold=True, color=RED)
-
-add_footer(s)
-
-
-# ══════════════════════════════════════════════════════════════
-# Slide 9 — 축 4 정당성/지역사회
-# ══════════════════════════════════════════════════════════════
-s = prs.slides.add_slide(blank)
-set_background(s, BG)
-add_title_bar(s, "축 4 · 정당성 · 지역사회", "과정이 결과보다 중요하다")
-
-# Procedural Justice — 큰 박스
+# 나머지 두 공구
 box = s.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.6), Inches(1.55),
-    Inches(6.05), Inches(5.4)
+    MSO_SHAPE.ROUNDED_RECTANGLE,
+    Inches(0.6), Inches(4.3), Inches(6.0), Inches(2.2)
 )
 box.fill.solid()
 box.fill.fore_color.rgb = WHITE
 box.line.color.rgb = GOLD
-box.line.width = Pt(2)
-box.adjustments[0] = 0.04
-
-add_text(s, "Procedural Justice", 0.85, 1.75, 5.5, 0.5,
-         size=22, bold=True, color=NAVY)
-add_text(s, "Tom Tyler · 결과보다 과정의 공정성이 정당성을 결정",
-         0.85, 2.25, 5.5, 0.4, size=11, color=GRAY_MID)
-
-pj = [
-    ("Voice", "발언권", "시민이 자기 입장을\n충분히 말할 기회"),
-    ("Neutrality", "중립성", "사실·규칙 기반\n일관된 판단"),
-    ("Respect", "존중", "존엄을 침해하지 않는\n언어와 태도"),
-    ("Trust", "신뢰", "선의로 시민 이익을\n고려한다는 인상"),
-]
-x = 0.85
-for en, kr, desc in pj:
-    c = s.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(x), Inches(2.75), Inches(1.4), Inches(1.6)
-    )
-    c.fill.solid()
-    c.fill.fore_color.rgb = NAVY
-    c.line.fill.background()
-    c.adjustments[0] = 0.15
-    add_text(s, en, x + 0.05, 2.85, 1.3, 0.4,
-             size=12, bold=True, color=GOLD, align=PP_ALIGN.CENTER)
-    add_text(s, kr, x + 0.05, 3.15, 1.3, 0.4,
-             size=14, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
-    add_text(s, desc, x + 0.05, 3.55, 1.3, 0.7,
-             size=9, color=GRAY_LIGHT, align=PP_ALIGN.CENTER)
-    x += 1.45
-
-add_text(s, "❖ 핵심 통찰", 0.85, 4.55, 5.5, 0.4, size=12, bold=True, color=RED)
+box.line.width = Pt(1.5)
+box.adjustments[0] = 0.06
+add_text(s, "COP  ·  지역사회 경찰활동",
+         0.85, 4.45, 5.5, 0.4, size=16, bold=True, color=NAVY)
 add_text(s,
-         "사람들은 법정에서 져도 과정이 공정했다고 느끼면\n"
-         "결과를 수용합니다. 반대로 이겨도 과정이 불공정하면\n"
-         "법 체계를 신뢰하지 못합니다. \"규정대로 했다\"는\n"
-         "방어는 정당성 언어와 무관합니다.",
-         0.85, 4.9, 5.8, 1.8, size=11, color=GRAY_DARK)
+         "1829년 Robert Peel의 9대 원칙으로 회귀 —\n"
+         "\"경찰은 시민이고 시민은 경찰이다.\"\n\n"
+         "지구대 밀착, 주민 협력, 문제해결 3축.",
+         0.85, 4.85, 5.5, 1.6, size=13, color=GRAY_DARK, line_spacing=1.3)
 
-# COP + Broken Windows
-add_box(s, "COP  ·  지역사회 경찰활동",
-        "Peel 제7원칙으로 회귀.\n파트너십 · 조직변화 · 문제해결 3축.\n"
-        "한국의 자율방범대·경찰발전협의회가\n이 철학의 부분 구현.",
-        6.85, 1.55, 6.05, 2.6)
+box2 = s.shapes.add_shape(
+    MSO_SHAPE.ROUNDED_RECTANGLE,
+    Inches(6.85), Inches(4.3), Inches(6.0), Inches(2.2)
+)
+box2.fill.solid()
+box2.fill.fore_color.rgb = WHITE
+box2.line.color.rgb = RED
+box2.line.width = Pt(1.5)
+box2.adjustments[0] = 0.06
+add_text(s, "깨진 유리창  ·  비판적으로 다시 읽기",
+         7.1, 4.45, 5.5, 0.4, size=16, bold=True, color=RED)
+add_text(s,
+         "원래 이론이 \"무관용 단속\"으로 오해되면서\n"
+         "뉴욕의 실패 사례가 나왔습니다.\n\n"
+         "이 도구는 \"엄격한 단속\" 요구가 들어올 때\n"
+         "경고 필터 역할을 합니다.",
+         7.1, 4.85, 5.5, 1.7, size=13, color=GRAY_DARK, line_spacing=1.3)
 
-add_box(s, "Broken Windows  ·  비판적 재해석",
-        "Wilson & Kelling 1982의 원이론은 오해되어\n"
-        "Zero Tolerance로 변질.\n"
-        "이 툴킷은 \"무관용 단속\"이 아니라\n"
-        "CPTED + 복지 연계로 재해석.\n"
-        "주민 측 \"엄격 단속\" 요구에\n"
-        "경찰이 즉답하지 않도록 경고 필터 역할.",
-        6.85, 4.35, 6.05, 2.6,
-        title_color=RED, border_color=RED)
-
-add_footer(s)
+add_footer(s, 11)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 10 — 샘플: 시나리오 (입력)
+# Slide 12 — 안내데스크: /peel 이 어떻게 고르나
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "샘플 테스트 · 시나리오 입력",
-              "성건파출소가 /peel 에 반복 민원을 입력하면")
+add_title_bar(s, "/peel 이 어떻게 고르나", "종합병원 안내 데스크와 같습니다")
 
-# 큰 입력 박스
-box = s.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.6), Inches(1.6),
-    Inches(12.3), Inches(4.0)
-)
-box.fill.solid()
-box.fill.fore_color.rgb = WHITE
-box.line.color.rgb = NAVY
-box.line.width = Pt(1.5)
-box.adjustments[0] = 0.03
+add_text(s, "비유 — 종합병원 안내 데스크",
+         0.6, 1.6, 12, 0.5, size=20, bold=True, color=NAVY)
+add_text(s,
+         "환자가 \"허리가 아파요\" 하면 안내 데스크가\n"
+         "정형외과인지 신경외과인지 재활의학과인지 정해줍니다.\n"
+         "/peel 도 똑같습니다.",
+         0.6, 2.1, 12, 1.1, size=16, color=GRAY_MID, line_spacing=1.4)
 
-add_text(s, "▸ 입력 (성건파출소 접수 반복 민원 · 3개월 누적 14건)",
-         0.85, 1.75, 12, 0.4, size=14, bold=True, color=NAVY)
-
-scenario = (
-    "경주시 성건동 ○○근린공원에서 지난 3개월간 야간 시간대(22~02시)에\n"
-    "청소년 집단(15~18세 추정, 5~10명) 음주·흡연·소란 민원이 반복 접수되고 있다.\n"
-    "주민 민원 총 14건. 순찰차가 접근하면 흩어지고, 떠나면 복귀하는 패턴.\n"
-    "주변 편의점에서 청소년 주류 판매 의심 정황도 있음.\n\n"
-    "일부 주민은 \"무관용 단속\"을 강하게 요구하고 있고,\n"
-    "다른 주민은 \"우리 애들인데 범죄자 취급하지 말라\"는 입장.\n"
-    "성건파출소 인력으로는 야간 상시 배치 불가능."
-)
-add_text(s, scenario, 0.85, 2.2, 12, 3.4, size=13, color=GRAY_DARK)
-
-# 분류 결과
-add_text(s, "▸ 라우터의 1차 분류",
-         0.6, 5.85, 12, 0.4, size=14, bold=True, color=NAVY)
-
-chips = [
-    ("반복 패턴 · 3개월", NAVY),
-    ("장소 집중", NAVY),
-    ("청소년 요소", NAVY_LIGHT),
-    ("주민 의견 분열", NAVY_LIGHT),
-    ("\"무관용\" 요구 → BW 필터 필수", RED),
+# 3단계 화살표 플로우
+stages = [
+    ("1단계", "상황 분류",
+     "반복 패턴?\n단일 사건?\n현장 위기?"),
+    ("2단계", "공구 고르기",
+     "12개 중\n2~4개 조합\n(나머지는 뺌)"),
+    ("3단계", "순서 잡기",
+     "어느 공구를\n먼저 · 나중에\n적용할지"),
+    ("결과", "체크리스트",
+     "각 단계에서\n물어야 할 질문\n제시"),
 ]
 x = 0.6
-for text, color in chips:
-    w = 2.45 if "필터" not in text else 3.3
-    chip = s.shapes.add_shape(
+for label, title, desc in stages:
+    box = s.shapes.add_shape(
         MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(x), Inches(6.3), Inches(w), Inches(0.55)
+        Inches(x), Inches(3.4), Inches(2.9), Inches(2.9)
     )
-    chip.fill.solid()
-    chip.fill.fore_color.rgb = color
-    chip.line.fill.background()
-    chip.adjustments[0] = 0.3
-    add_text(s, text, x + 0.1, 6.43, w - 0.2, 0.4,
-             size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
-    x += w + 0.1
+    box.fill.solid()
+    box.fill.fore_color.rgb = WHITE
+    box.line.color.rgb = NAVY
+    box.line.width = Pt(1.8)
+    box.adjustments[0] = 0.08
 
-add_footer(s)
-
-
-# ══════════════════════════════════════════════════════════════
-# Slide 11 — 샘플: 라우터 출력 (프레임워크 선정)
-# ══════════════════════════════════════════════════════════════
-s = prs.slides.add_slide(blank)
-set_background(s, BG)
-add_title_bar(s, "샘플 테스트 · 프레임워크 선정",
-              "12개 중 7개 선정 · 5개 제외")
-
-# 선정 (왼쪽)
-add_text(s, "✓ 선정된 프레임워크",
-         0.6, 1.55, 6, 0.4, size=16, bold=True, color=NAVY)
-
-selected = [
-    ("SARA", "전체 진단·개입 사이클"),
-    ("Crime Triangle", "원인 6박스 분해"),
-    ("Hot Spots", "공간·시간 집중 확인"),
-    ("CPTED", "환경 개입 (조명·조경)"),
-    ("COP", "학교·구청·편의점 협력"),
-    ("Procedural Justice", "청소년·주민 대응 원칙"),
-    ("Broken Windows", "\"무관용\" 요구 필터 (비판)"),
-]
-y = 2.05
-for name, why in selected:
-    mark = s.shapes.add_shape(
-        MSO_SHAPE.OVAL, Inches(0.65), Inches(y + 0.1),
-        Inches(0.3), Inches(0.3)
+    # 라벨
+    lbl = s.shapes.add_shape(
+        MSO_SHAPE.RECTANGLE,
+        Inches(x), Inches(3.4), Inches(2.9), Inches(0.6)
     )
-    mark.fill.solid()
-    mark.fill.fore_color.rgb = NAVY
-    mark.line.fill.background()
-    add_text(s, "✓", 0.65, y + 0.05, 0.3, 0.3,
-             size=14, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
-    add_text(s, name, 1.1, y + 0.05, 3.5, 0.4, size=14, bold=True, color=NAVY)
-    add_text(s, why, 4.2, y + 0.08, 2.7, 0.4, size=11, color=GRAY_MID)
-    y += 0.6
+    lbl.fill.solid()
+    lbl.fill.fore_color.rgb = NAVY
+    lbl.line.fill.background()
+    add_text(s, label, x + 0.1, 3.52, 2.7, 0.4,
+             size=14, bold=True, color=GOLD, align=PP_ALIGN.CENTER)
 
-# 제외 (오른쪽)
-add_text(s, "✕ 제외된 프레임워크",
-         7.0, 1.55, 6, 0.4, size=16, bold=True, color=GRAY_MID)
+    add_text(s, title, x + 0.1, 4.15, 2.7, 0.5,
+             size=18, bold=True, color=NAVY, align=PP_ALIGN.CENTER)
+    add_text(s, desc, x + 0.1, 4.75, 2.7, 1.4,
+             size=13, color=GRAY_MID, align=PP_ALIGN.CENTER, line_spacing=1.35)
 
-excluded = [
-    ("PEACE Model", "조사 면담 단계 아님"),
-    ("Cognitive Interview", "피해자 면담 단계 아님"),
-    ("BCSM", "위기 협상 상황 아님"),
-    ("ICAT", "현장 물리력 판단 상황 아님"),
-    ("ILP", "전략 수준 프로파일링 과대 적용"),
-]
-y = 2.05
-for name, why in excluded:
-    mark = s.shapes.add_shape(
-        MSO_SHAPE.OVAL, Inches(7.05), Inches(y + 0.1),
-        Inches(0.3), Inches(0.3)
-    )
-    mark.fill.solid()
-    mark.fill.fore_color.rgb = GRAY_MID
-    mark.line.fill.background()
-    add_text(s, "×", 7.05, y + 0.0, 0.3, 0.3,
-             size=14, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
-    add_text(s, name, 7.5, y + 0.05, 3.5, 0.4, size=14, bold=True, color=GRAY_MID)
-    add_text(s, why, 10.6, y + 0.08, 2.7, 0.4, size=11, color=GRAY_MID)
-    y += 0.6
+    # 화살표 (마지막 제외)
+    if x < 9:
+        arrow = s.shapes.add_shape(
+            MSO_SHAPE.RIGHT_ARROW,
+            Inches(x + 2.95), Inches(4.6), Inches(0.22), Inches(0.45)
+        )
+        arrow.fill.solid()
+        arrow.fill.fore_color.rgb = GOLD
+        arrow.line.fill.background()
+    x += 3.15
 
-# 강조 메시지
-msg = s.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE,
-    Inches(0.6), Inches(6.2), Inches(12.3), Inches(0.75)
+add_highlight_box(
+    s,
+    "기자·공무원이 아닌, 경찰 실무자 눈높이에서 자동으로 초안이 나옵니다.\n"
+    "여러분이 그 초안을 현장 경험으로 고쳐서 쓰시면 됩니다.",
+    0.6, 6.5, 12.1, 0.9, size=14
 )
-msg.fill.solid()
-msg.fill.fore_color.rgb = RED
-msg.line.fill.background()
-msg.adjustments[0] = 0.3
-add_text(s,
-         "▶  \"제외된 프레임워크\"를 명시적으로 보여주는 것이 핵심 — "
-         "왜 안 쓰는지 설명할 수 있어야 토의가 진전됩니다.",
-         0.85, 6.37, 12, 0.4,
-         size=13, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 
-add_footer(s)
+add_footer(s, 12)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 12 — 샘플: 실행 파이프라인
+# Slide 13 — 설치 준비
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "샘플 테스트 · 실행 파이프라인",
-              "선정된 프레임워크의 적용 순서")
+add_title_bar(s, "설치 준비 · 아드님 한 번만 부탁하세요", "혼자 1~4단계, 도움은 5~7단계")
 
-phases = [
-    ("Phase 1", "문제 정의",
-     "SARA-Scanning + Hot Spots",
-     "14건 데이터·지도화\n목·금·토 22–02시 북측 놀이터 집중 확인"),
-    ("Phase 2", "원인 분석",
-     "Crime Triangle · CPTED 현장점검",
-     "6박스 분해 → Handler·Place·Manager가 개입지점\nCPTED 6원칙 체크리스트"),
-    ("Phase 3a", "필터링",
-     "Broken Windows 비판적 검토",
-     "\"무관용 단속\" 요구의 함정 설명\n차별·이동·신뢰훼손 경고"),
-    ("Phase 3b", "개입 설계",
-     "CPTED + COP + Procedural Justice",
-     "조명·조경 / 학교·센터·편의점·공원녹지과 협력 /\n청소년·주민 대응 4요소 삽입"),
-    ("Phase 4", "평가",
-     "SARA-Assessment",
-     "3개월 후 민원·이동·체감 측정\n결과에 따라 사이클 재시작"),
+add_image(s, IMG / "install_desk.png", 7.3, 1.5, 5.6, 3.4)
+
+add_text(s, "먼저 준비해 두실 것",
+         0.6, 1.55, 7.0, 0.5, size=20, bold=True, color=NAVY)
+add_bullets(s,
+    [
+        "노트북 한 대 (윈도우 또는 맥, 둘 다 됩니다)",
+        "인터넷 연결",
+        "이메일 주소 하나 (구글·카카오도 가능)",
+        "월 구독료 약 2만 8천 원 (Claude Pro)",
+    ],
+    0.8, 2.1, 6.8, 2.6, size=16
+)
+
+add_highlight_box(
+    s,
+    "\"컴퓨터 잘 모르는데요?\" — 괜찮습니다.\n"
+    "1~4단계는 혼자 하실 수 있고, 5~7단계만 가족·직원·IT 담당에게 화면 공유로 10분 부탁하시면 됩니다.",
+    0.6, 5.3, 12.1, 1.6, size=15
+)
+
+add_footer(s, 13)
+
+
+# ══════════════════════════════════════════════════════════════
+# Slide 14 — 설치 7단계
+# ══════════════════════════════════════════════════════════════
+s = prs.slides.add_slide(blank)
+set_background(s, BG)
+add_title_bar(s, "설치 7단계 · 순서대로만 따라오세요",
+              "1~4 혼자 · 5~7 도움받기")
+
+steps = [
+    ("1", "claude.ai 접속 · 회원가입", "이메일 또는 구글 계정", "혼자"),
+    ("2", "Claude Pro 구독 (월 2만 8천 원)", "Skills 기능은 Pro부터 가능", "혼자"),
+    ("3", "claude.com/download 접속", "Claude Desktop 앱 내려받기", "혼자"),
+    ("4", "앱 설치 · 로그인", "일반 프로그램처럼 더블클릭", "혼자"),
+    ("5", "zip 파일 받기 (최희철 전달)", "카톡 또는 이메일로 전달", "도움"),
+    ("6", "앱에서 설정 → 스킬 → 업로드", "zip 그대로 선택, 풀지 마세요", "도움"),
+    ("7", "첫 대화 열어 민원 붙여넣기", "슬래시 명령어 몰라도 됩니다", "도움"),
 ]
 
 y = 1.55
-for phase, name, frameworks, desc in phases:
-    # Phase 라벨
-    label = s.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(0.6), Inches(y), Inches(1.5), Inches(0.95)
+for num, title, desc, who in steps:
+    color = NAVY if who == "혼자" else GOLD
+    label_color = WHITE if who == "혼자" else NAVY
+
+    # 번호 원
+    circle = s.shapes.add_shape(
+        MSO_SHAPE.OVAL, Inches(0.6), Inches(y + 0.1), Inches(0.75), Inches(0.75)
     )
-    label.fill.solid()
-    label.fill.fore_color.rgb = NAVY
-    label.line.fill.background()
-    label.adjustments[0] = 0.2
-    add_text(s, phase, 0.6, y + 0.12, 1.5, 0.4,
-             size=12, bold=True, color=GOLD, align=PP_ALIGN.CENTER)
-    add_text(s, name, 0.6, y + 0.42, 1.5, 0.4,
-             size=13, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    circle.fill.solid()
+    circle.fill.fore_color.rgb = color
+    circle.line.fill.background()
+    add_text(s, num, 0.6, y + 0.2, 0.75, 0.55,
+             size=22, bold=True, color=label_color, align=PP_ALIGN.CENTER)
 
     # 내용 박스
-    content = s.shapes.add_shape(
+    box = s.shapes.add_shape(
         MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(2.25), Inches(y), Inches(10.65), Inches(0.95)
+        Inches(1.5), Inches(y), Inches(9.5), Inches(0.95)
     )
-    content.fill.solid()
-    content.fill.fore_color.rgb = WHITE
-    content.line.color.rgb = NAVY
-    content.line.width = Pt(1)
-    content.adjustments[0] = 0.15
+    box.fill.solid()
+    box.fill.fore_color.rgb = WHITE
+    box.line.color.rgb = color
+    box.line.width = Pt(1.2)
+    box.adjustments[0] = 0.2
+    add_text(s, title, 1.7, y + 0.12, 9.1, 0.4,
+             size=16, bold=True, color=NAVY)
+    add_text(s, desc, 1.7, y + 0.48, 9.1, 0.4,
+             size=13, color=GRAY_MID)
 
-    add_text(s, frameworks, 2.45, y + 0.08, 10.3, 0.4,
-             size=12, bold=True, color=NAVY)
-    add_text(s, desc, 2.45, y + 0.38, 10.3, 0.55,
-             size=10, color=GRAY_MID)
+    # 혼자/도움 라벨
+    tag = s.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(11.15), Inches(y + 0.25), Inches(1.55), Inches(0.5)
+    )
+    tag.fill.solid()
+    tag.fill.fore_color.rgb = color
+    tag.line.fill.background()
+    tag.adjustments[0] = 0.4
+    add_text(s, who, 11.15, y + 0.33, 1.55, 0.35,
+             size=13, bold=True, color=label_color, align=PP_ALIGN.CENTER)
 
-    y += 1.08
+    y += 0.78
 
-add_footer(s)
+add_footer(s, 14)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 13 — 경찰발전협의회 활용 가이드
+# Slide 15 — 부탁과 연락처
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
-set_background(s, BG)
-add_title_bar(s, "경찰 실무 활용 가이드",
-              "지구대·경찰서 각 부서별 권장 프레임워크 조합")
+set_background(s, NAVY_DEEP)
 
-# 활용 표
-rows = [
-    ("지구대 · 반복 민원 분석", "SARA + Crime Triangle + CPTED", "근본 원인과 환경 개입"),
-    ("생활안전계 · 관할 치안 전략", "Hot Spots + ILP + SARA", "데이터 기반 우선순위"),
-    ("범죄예방진단팀 · 환경 점검", "CPTED + Crime Triangle", "물리 환경 개선"),
-    ("감찰 · 민원 사후 검토", "Procedural Justice + COP", "신뢰 회복 진단"),
-    ("여성청소년과 · 청소년 이슈", "Broken Windows(비판) + COP", "\"단속\" 함정 회피"),
-    ("수사과 · 조사·면담", "PEACE + Cognitive Interview", "비강압 진술 확보"),
-    ("위기협상요원 · 정신건강 위기", "ICAT + BCSM", "물리력 최소화"),
-]
-
-# 헤더
-header = s.shapes.add_shape(
-    MSO_SHAPE.RECTANGLE, Inches(0.6), Inches(1.55),
-    Inches(12.3), Inches(0.5)
+# 상단 금색 라인
+top_line = s.shapes.add_shape(
+    MSO_SHAPE.RECTANGLE, 0, Inches(0.8), prs.slide_width, Inches(0.08)
 )
-header.fill.solid()
-header.fill.fore_color.rgb = NAVY
-header.line.fill.background()
-add_text(s, "부서 · 상황", 0.8, 1.65, 4.5, 0.3,
-         size=12, bold=True, color=WHITE)
-add_text(s, "권장 프레임워크", 5.5, 1.65, 4.5, 0.3,
-         size=12, bold=True, color=WHITE)
-add_text(s, "핵심 효과", 10.2, 1.65, 3.0, 0.3,
-         size=12, bold=True, color=WHITE)
+top_line.fill.solid()
+top_line.fill.fore_color.rgb = GOLD
+top_line.line.fill.background()
 
-y = 2.1
-for i, (topic, fws, effect) in enumerate(rows):
-    row = s.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(0.6), Inches(y),
-        Inches(12.3), Inches(0.45)
-    )
-    row.fill.solid()
-    row.fill.fore_color.rgb = WHITE if i % 2 == 0 else GRAY_LIGHT
-    row.line.fill.background()
-    add_text(s, topic, 0.8, y + 0.08, 4.7, 0.3, size=11, bold=True, color=NAVY)
-    add_text(s, fws, 5.5, y + 0.08, 4.7, 0.3, size=11, color=GRAY_DARK)
-    add_text(s, effect, 10.2, y + 0.08, 3.0, 0.3, size=10, color=GRAY_MID)
-    y += 0.45
+add_text(s, "부탁드리는 한 가지",
+         0.8, 1.1, 12, 0.6, size=20, color=GOLD)
 
-# 사용 팁
-add_text(s, "❖  적용 팁 (경찰 실무자용)",
-         0.6, 5.4, 12, 0.4, size=14, bold=True, color=NAVY)
-tips = [
-    "사건 분석 전 /peel 을 돌려 권장 프레임워크와 제외 프레임워크를 먼저 확인",
-    "선정된 프레임워크의 체크리스트를 회의에 띄우고 항목별 논의",
-    "\"느낌\" 대신 프레임워크 항목에 대한 답변으로 정리",
-    "결론은 \"순찰 강화\"가 아닌 다음 단계(담당·일정·지표) 형태로 기록",
-    "KICS 분석이 필요한 질문은 따로 분리해 범죄예방진단팀·생활안전계에 할당",
-]
-add_bullets(s, tips, 0.9, 5.85, 12, 1.8, size=12)
-
-add_footer(s)
-
-
-# ══════════════════════════════════════════════════════════════
-# Slide 14 — 설계 원칙 + 다음 단계
-# ══════════════════════════════════════════════════════════════
-s = prs.slides.add_slide(blank)
-set_background(s, BG)
-add_title_bar(s, "설계 원칙 · 다음 단계",
-              "이 도구가 약속하는 것과 약속하지 않는 것")
-
-add_text(s, "✦  설계 원칙", 0.6, 1.55, 12, 0.4,
-         size=16, bold=True, color=NAVY)
-
-principles = [
-    ("근거 기반만",
-     "동료심사 연구 또는 공식 교리(FBI, 영국 College of Policing, PERF, Home Office)만 수록"),
-    ("강압 기법 의도적 배제",
-     "Reid 기법 등 허위 자백 유발 기법은 포함하지 않음 — PEACE가 윤리적·실증적 대안"),
-    ("한국 맥락 재작성",
-     "단순 번역이 아닌 한국 경찰(경찰청·경찰서·지구대·파출소·KICS) 실무 맥락 기준"),
-    ("효율보다 정당성",
-     "절차적 정의 연구는 \"무엇을\" 보다 \"어떻게\"가 정당성을 결정함을 보여줌"),
-]
-y = 2.05
-for title, body in principles:
-    mark = s.shapes.add_shape(
-        MSO_SHAPE.RECTANGLE, Inches(0.65), Inches(y + 0.1),
-        Inches(0.08), Inches(0.3)
-    )
-    mark.fill.solid()
-    mark.fill.fore_color.rgb = GOLD
-    mark.line.fill.background()
-    add_text(s, title, 0.9, y, 12, 0.4, size=14, bold=True, color=NAVY)
-    add_text(s, body, 0.9, y + 0.32, 12, 0.5, size=11, color=GRAY_MID)
-    y += 0.85
-
-add_text(s, "✦  다음 단계",
-         0.6, 5.6, 12, 0.4, size=16, bold=True, color=NAVY)
-steps = [
-    "1.  경주경찰서 경찰 실무자(생활안전계·지구대·범죄예방진단팀) 피드백 수집",
-    "2.  경주 지역 공공데이터 핫스팟 브리핑(docs/gyeongju-hotspots.md) 검토",
-    "3.  한국 경찰 실제 사례로 각 프레임워크 문서 보강 — 현장 용어·절차 반영",
-    "4.  개선 후 GitHub 공개 — 전국 지구대·경찰서·훈련과정이 참고할 수 있도록",
-]
-add_bullets(s, steps, 0.9, 6.1, 12, 1.4, size=12)
-
-# 연락처 블록
-contact = s.shapes.add_shape(
-    MSO_SHAPE.RECTANGLE, Inches(0.0), Inches(7.0),
-    prs.slide_width, Inches(0.5)
-)
-contact.fill.solid()
-contact.fill.fore_color.rgb = NAVY
-contact.line.fill.background()
 add_text(s,
-         "작성 · 최희철  ·  경주경찰서 경찰발전협의회 회원  ·  github.com/ironyjk/police-frameworks",
-         0.6, 7.12, 12.3, 0.3,
-         size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+         "써 보시고 고쳐주십시오.",
+         0.8, 1.75, 12, 1.0, size=46, bold=True, color=WHITE)
+
+add_text(s,
+         "이 도구는 완성품이 아닙니다. 초안입니다.\n"
+         "여러분의 현장 경험으로 틀린 부분을 지적해 주시면,\n"
+         "그게 다음 버전에 반영됩니다. 그게 가장 큰 기여입니다.",
+         0.8, 3.1, 12, 1.6, size=17, color=GRAY_LIGHT, line_spacing=1.45)
+
+# 연락처 박스
+contact_box = s.shapes.add_shape(
+    MSO_SHAPE.ROUNDED_RECTANGLE,
+    Inches(0.8), Inches(5.0), Inches(11.8), Inches(1.7)
+)
+contact_box.fill.solid()
+contact_box.fill.fore_color.rgb = NAVY
+contact_box.line.color.rgb = GOLD
+contact_box.line.width = Pt(1.5)
+contact_box.adjustments[0] = 0.1
+
+add_text(s, "만든 사람", 1.1, 5.2, 5, 0.4,
+         size=13, color=GOLD)
+add_text(s, "최희철", 1.1, 5.5, 5, 0.6,
+         size=26, bold=True, color=WHITE)
+add_text(s,
+         "경주경찰서 경찰발전협의회 회원",
+         1.1, 6.1, 5.5, 0.4, size=13, color=GRAY_LIGHT)
+add_text(s,
+         "소프트웨어 개발자 (평소 AI 도구를 만듭니다)",
+         1.1, 6.4, 5.5, 0.4, size=13, color=GRAY_LIGHT)
+
+# 오른쪽 안내
+add_text(s, "피드백 주실 때", 7.5, 5.2, 5, 0.4,
+         size=13, color=GOLD)
+add_text(s, "어느 슬라이드의", 7.5, 5.55, 5, 0.4,
+         size=15, color=WHITE)
+add_text(s, "어떤 부분이 현장과 다른지", 7.5, 5.85, 5, 0.4,
+         size=15, color=WHITE)
+add_text(s, "한 줄만 알려주셔도 충분합니다.", 7.5, 6.15, 5, 0.4,
+         size=15, bold=True, color=GOLD)
+
+# 하단
+add_text(s,
+         "\"경찰은 시민이고, 시민은 경찰이다.\"  — Robert Peel, 1829",
+         0.8, 6.95, 12, 0.4, size=13, color=GRAY_LIGHT, align=PP_ALIGN.CENTER)
 
 
 # ──────────────────────────────────────────────────────────────
 # 저장
 # ──────────────────────────────────────────────────────────────
 
-here = Path(__file__).resolve().parent
-out = here.parent / "docs" / "intro.pptx"
+out = HERE.parent / "docs" / "intro.pptx"
 out.parent.mkdir(exist_ok=True)
 prs.save(str(out))
-print(f"✓ Saved: {out}")
-print(f"  Slides: {len(prs.slides)}")
+print(f"OK Saved: {out}")
+print(f"   Slides: {len(prs.slides)}")
