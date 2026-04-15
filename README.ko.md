@@ -2,6 +2,9 @@
 
 > Claude Code를 위한 12개 근거 기반(Evidence-Based) 경찰활동 프레임워크 메타 라우터
 
+**작성자**: **최희철** — **경주경찰서 경찰발전협의회 회원**
+**만든 이유**: 한국 경찰 발전에 기여하기 위한 개인 프로젝트
+
 **Police Frameworks**는 경찰 실무에서 쓰이는 검증된 분석 도구들을 한곳에 모은 프로젝트입니다. `/think`가 경영 전략, `/howtotalk`가 의사소통을 위한 것이라면, 이 프로젝트는 경찰관, 지휘관, 경찰발전협의회 위원을 위한 지능형 라우팅 계층입니다.
 
 상황을 설명하면(반복되는 핫스팟, 까다로운 조사 면담, 위기 신고, 민원), 메타 라우터가 적합한 프레임워크(들)를 선택하고 순서를 잡아 적용 방법을 안내합니다.
@@ -54,7 +57,9 @@
 | [`broken-windows`](broken-windows/SKILL.md) | Wilson & Kelling (비판적 재해석) | 무질서 대응의 함정 이해 |
 
 ### 메타 라우터
-- [`police`](police/SKILL.md) — 상황 입력 → 프레임워크 선택/시퀀싱
+- [`peel`](peel/SKILL.md) — 상황 입력 → 프레임워크 선택/시퀀싱. Sir Robert Peel(1829)의 이름을 땄습니다.
+
+> **왜 `/peel`인가?** 1829년 런던경찰청을 창설한 Robert Peel은 현대 경찰의 창시자입니다. 그의 9대 원칙(특히 제7원칙 *"경찰은 시민이고 시민은 경찰이다"*)은 이 툴킷의 절차적 정의·COP·정당성 이론의 뿌리입니다. 또한 경찰관이 `/police`를 쳐서 자기 자신을 호출하는 어색함을 피합니다.
 
 ---
 
@@ -62,13 +67,13 @@
 
 ```bash
 # 전체 툴킷 클론
-git clone https://github.com/ironyjk/police-frameworks.git ~/.claude/skills/police-frameworks
+git clone https://github.com/ironyjk/peel-frameworks.git ~/.claude/skills/peel-frameworks
 
 # 또는 install.sh 사용
-curl -sL https://raw.githubusercontent.com/ironyjk/police-frameworks/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/ironyjk/peel-frameworks/main/install.sh | bash
 ```
 
-각 프레임워크는 독립적인 Claude Code Skill입니다. 개별 호출하거나 `/police` 메타 라우터를 통해 사용할 수 있습니다.
+각 프레임워크는 독립적인 Claude Code Skill입니다. 개별 호출하거나 `/peel` 메타 라우터를 통해 사용할 수 있습니다. 샘플 테스트는 [docs/sample-test.md](docs/sample-test.md)를, 소개 슬라이드는 [docs/intro.pptx](docs/intro.pptx)를 참조하세요.
 
 ---
 
@@ -77,7 +82,7 @@ curl -sL https://raw.githubusercontent.com/ironyjk/police-frameworks/main/instal
 ### 메타 라우터 사용
 
 ```
-/police
+/peel
 situation: 이천 산업단지에서 새벽 시간대 절도 신고가 3개월째 증가 중입니다.
 ```
 

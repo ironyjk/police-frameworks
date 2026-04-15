@@ -2,6 +2,8 @@
 
 > A meta-router and collection of 12 evidence-based policing frameworks for Claude Code.
 
+**Created by 최희철 (Choi Hee-cheol)**, member of the **경주경찰서 경찰발전협의회 (Gyeongju Police Station Police Development Council)**, as a contribution to the advancement of Korean policing.
+
 **Police Frameworks** is to policing what [/think](https://github.com/) is to business strategy and [/howtotalk](https://github.com/) is to communication — an intelligence layer that helps officers, supervisors, and police councils select the right analytical tool for the situation.
 
 You describe a situation (a hot spot, a difficult interview, a crisis call, a community complaint), and the meta-router selects the appropriate framework(s), sequences them, and walks you through application.
@@ -33,7 +35,7 @@ You describe a situation (a hot spot, a difficult interview, a crisis call, a co
 - `broken-windows` — Broken Windows Theory (re-examined)
 
 ### Meta-Router
-- `police` — the orchestrator that routes situations to the right framework(s)
+- `peel` — the orchestrator that routes situations to the right framework(s). Named after Sir Robert Peel (1829), founder of modern policing.
 
 ---
 
@@ -41,13 +43,15 @@ You describe a situation (a hot spot, a difficult interview, a crisis call, a co
 
 ```bash
 # Clone the full toolkit
-git clone https://github.com/ironyjk/police-frameworks.git ~/.claude/skills/police-frameworks
+git clone https://github.com/ironyjk/peel-frameworks.git ~/.claude/skills/peel-frameworks
 
 # Or use the install script
-curl -sL https://raw.githubusercontent.com/ironyjk/police-frameworks/main/install.sh | bash
+curl -sL https://raw.githubusercontent.com/ironyjk/peel-frameworks/main/install.sh | bash
 ```
 
-Each framework is a Claude Code Skill with its own `SKILL.md`. You can use them individually or through the `/police` meta-router.
+Each framework is a Claude Code Skill with its own `SKILL.md`. You can use them individually or through the `/peel` meta-router.
+
+> **Why `/peel`?** Sir Robert Peel founded modern policing in 1829. His 9 Principles — especially Principle 7, *"the police are the public and the public are the police"* — are the philosophical root of procedural justice, community policing, and the legitimacy theory that underlies this entire toolkit. It also avoids the awkwardness of officers typing `/police` to refer to themselves.
 
 ---
 
@@ -56,7 +60,7 @@ Each framework is a Claude Code Skill with its own `SKILL.md`. You can use them 
 ### Via the meta-router
 
 ```
-/police
+/peel
 situation: 이천 산업단지에서 새벽 시간대 절도 신고가 3개월째 증가 중입니다.
 ```
 

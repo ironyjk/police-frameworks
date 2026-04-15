@@ -1,7 +1,7 @@
 ---
-name: police
-version: "0.1.0"
-description: "경찰 프레임워크 메타 라우터 — 상황을 입력하면 12개 근거기반 경찰활동 프레임워크(SARA, Crime Triangle, CPTED, Hot Spots, ILP, PEACE, Cognitive Interview, BCSM, ICAT, Procedural Justice, COP, Broken Windows)에서 최적 조합을 선택·시퀀싱해 안내합니다. /think가 경영전략용이라면 /police는 경찰활동용입니다. 한국 경찰 및 경찰발전협의회 실무 맥락에 맞게 재작성됨."
+name: peel
+version: "0.2.0"
+description: "Peel — 경찰 프레임워크 메타 라우터. Sir Robert Peel(1829)의 9대 원칙을 뿌리로 하며, 상황을 입력하면 12개 근거기반 경찰활동 프레임워크(SARA, Crime Triangle, CPTED, Hot Spots, ILP, PEACE, Cognitive Interview, BCSM, ICAT, Procedural Justice, COP, Broken Windows)에서 최적 조합을 선택·시퀀싱해 안내합니다. /think가 경영전략용, /counsel이 심리상담용이라면 /peel은 경찰활동용입니다. 한국 경찰 및 경찰발전협의회 실무 맥락에 맞게 재작성됨."
 tools:
   - Read
   - Write
@@ -23,13 +23,35 @@ dependencies:
   - broken-windows
 ---
 
-# Police — 경찰 프레임워크 메타 라우터
+# Peel — 경찰 프레임워크 메타 라우터
 
-> "The police are the public and the public are the police." — Robert Peel, 1829
+> "The police are the public and the public are the police." — Sir Robert Peel, 1829
+
+**작성자**: 최희철 (경주경찰서 경찰발전협의회 회원) — 한국 경찰 발전 기여 목적의 개인 프로젝트
+
+## 왜 이름이 /peel 인가
+
+1829년 영국 런던경찰청(Metropolitan Police)을 창설한 Sir Robert Peel은 **현대 경찰의 창시자**로 불립니다. 그의 9대 원칙(Peelian Principles)은 200년이 지난 지금도 절차적 정의·지역사회 경찰활동·정당성 이론의 뿌리입니다.
+
+경찰관이 자기 자신을 "경찰"이라고 호출하는 것은 어색합니다. `/peel`은 이 툴킷의 철학적 기원이자, 자기지시어를 피한 호출어입니다. 그리고 이 툴킷 안의 절차적 정의, COP, Broken Windows 재해석, PEACE, ICAT 모두 결국 Peel의 제7원칙 — **"경찰은 시민이고 시민은 경찰이다"** — 로 수렴합니다.
+
+### Peel의 9대 원칙 (1829)
+
+1. 경찰의 기본 임무는 범죄와 무질서의 **예방**이다 — 무력 진압이 아니다
+2. 경찰의 권위는 시민의 **승인·협력·존경**에 기반한다
+3. 시민 협력 확보는 경찰이 물리력을 쓸 필요를 줄인다
+4. 협력의 정도는 경찰이 시민권을 얼마나 존중하느냐에 달렸다
+5. 여론에 영합하지 않고 **일관되고 공평한 법 집행**으로 승인을 얻는다
+6. 물리력은 설득·조언·경고가 실패한 경우에만, **최소한으로**
+7. **경찰은 시민이고 시민은 경찰이다** — 경찰은 시민의 대리인일 뿐
+8. 경찰은 법 집행자이지 재판관이 아니다
+9. 경찰 효율성의 척도는 **범죄 발생의 부재**이지 가시적 경찰 활동이 아니다
+
+---
 
 ## 이것이 무엇인가
 
-`police`는 프레임워크 자체가 아닙니다. 12개 근거기반 경찰활동 프레임워크 **위에 얹힌 지능형 라우팅 계층**입니다.
+`peel`은 프레임워크 자체가 아닙니다. 12개 근거기반 경찰활동 프레임워크 **위에 얹힌 지능형 라우팅 계층**입니다.
 
 경찰관, 지휘관, 경찰발전협의회 위원이 상황을 설명하면 — 반복 민원, 핫스팟 의심 지역, 까다로운 조사 면담, 자살 시도 신고, 지역 불신 문제 — 이 에이전트가 상황을 분석하고 적절한 프레임워크(들)를 선택해 파이프라인으로 구성한 뒤 실행을 안내합니다.
 
