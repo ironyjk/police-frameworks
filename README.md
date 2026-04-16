@@ -12,26 +12,31 @@ You describe a situation (a hot spot, a difficult interview, a crisis call, a co
 
 ## What's Inside
 
-### 4 Axes × 12 Frameworks
+### 4 Axes × 17 Frameworks
 
-**Axis 1 — Problem-Oriented Policing**
+**Axis 1 — Problem Analysis & Prevention (7)**
 - `sara` — SARA model (Scanning, Analysis, Response, Assessment)
 - `crime-triangle` — Routine Activity Theory + Problem Analysis Triangle
+- `scp` — **Situational Crime Prevention 25 Techniques** (Clarke) — all crime types
 - `cpted` — Crime Prevention Through Environmental Design
 - `hot-spots` — Hot Spots Policing (Sherman, Weisburd)
 - `ilp` — Intelligence-Led Policing (Ratcliffe)
+- `repeat-victimization` — **Repeat Victimization** (Farrell & Pease) — protect past victims
 
-**Axis 2 — Investigation & Interview**
+**Axis 2 — Investigation, Interview & Victim (3)**
 - `peace-model` — PEACE investigative interviewing (UK College of Policing)
 - `cognitive-interview` — Enhanced Cognitive Interview (Fisher & Geiselman)
+- `trauma-informed` — **Trauma-Informed Policing** (SAMHSA 4R) — prevent secondary harm
 
-**Axis 3 — Field Response & Crisis**
+**Axis 3 — Field Response & Crisis (2)**
 - `bcsm` — Behavioral Change Stairway Model (FBI crisis negotiation)
 - `icat` — Integrating Communications, Assessment, and Tactics (PERF de-escalation)
 
-**Axis 4 — Legitimacy & Community**
+**Axis 4 — Legitimacy, Community & Recovery (5)**
 - `procedural-justice` — Procedural Justice & Legitimacy (Tyler)
 - `cop` — Community-Oriented Policing
+- `restorative-justice` — **Restorative Justice Policing** (Zehr, Braithwaite) — repair over punishment
+- `third-party` — **Third-Party Policing** (Mazerolle & Ransley) — leverage landlords, schools, platforms
 - `broken-windows` — Broken Windows Theory (re-examined)
 
 ### Meta-Router

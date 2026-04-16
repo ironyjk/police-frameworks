@@ -24,38 +24,43 @@
 
 ---
 
-## 구성 (4개 축 × 12개 프레임워크)
+## 구성 (4개 축 × 17개 프레임워크)
 
-### 축 1 — 문제지향 경찰활동 (Problem-Oriented Policing)
+### 축 1 — 문제 분석·예방 (7)
 
 | 프레임워크 | 창시자 | 쓸 때 |
 |---|---|---|
 | [`sara`](sara/SKILL.md) | Goldstein, Eck & Spelman | 반복 민원/신고 분석 및 근본 해결 |
 | [`crime-triangle`](crime-triangle/SKILL.md) | Cohen & Felson, Clarke & Eck | 범죄 발생 조건 분해(가해자-대상-장소) |
+| [`scp`](scp/SKILL.md) | **Ronald Clarke** | **상황적 범죄예방 25기법 — 모든 범죄 유형에 기회 감소** |
 | [`cpted`](cpted/SKILL.md) | Jeffery, Newman | 환경설계로 범죄기회 제거 |
 | [`hot-spots`](hot-spots/SKILL.md) | Sherman, Weisburd | 범죄 집중 지점 기반 순찰 배치 |
 | [`ilp`](ilp/SKILL.md) | Ratcliffe | 정보분석 → 의사결정 → 영향 |
+| [`repeat-victimization`](repeat-victimization/SKILL.md) | **Farrell & Pease** | **반복 피해자 보호 — 한 번 당하면 또 당한다** |
 
-### 축 2 — 조사·면담 (Investigation & Interview)
+### 축 2 — 조사·면담·피해자 (3)
 
 | 프레임워크 | 창시자 | 쓸 때 |
 |---|---|---|
 | [`peace-model`](peace-model/SKILL.md) | 영국 경찰청 (1992) | 피의자/참고인 윤리적 조사면담 |
 | [`cognitive-interview`](cognitive-interview/SKILL.md) | Fisher & Geiselman | 피해자/목격자 기억 인출 최대화 |
+| [`trauma-informed`](trauma-informed/SKILL.md) | **SAMHSA** | **트라우마 인식 — 피해자 2차 가해 방지, 4R 원칙** |
 
-### 축 3 — 현장대응·위기 (Field Response & Crisis)
+### 축 3 — 현장대응·위기 (2)
 
 | 프레임워크 | 창시자 | 쓸 때 |
 |---|---|---|
 | [`bcsm`](bcsm/SKILL.md) | FBI (Vecchi, Van Hasselt) | 자살/인질/농성 등 위기협상 |
 | [`icat`](icat/SKILL.md) | PERF (미국경찰연구포럼) | 단계적 대응, 디에스컬레이션 |
 
-### 축 4 — 정당성·지역사회 (Legitimacy & Community)
+### 축 4 — 지역·정당성·회복 (5)
 
 | 프레임워크 | 창시자 | 쓸 때 |
 |---|---|---|
 | [`procedural-justice`](procedural-justice/SKILL.md) | Tom Tyler | 경찰 신뢰·정당성 진단 및 개선 |
 | [`cop`](cop/SKILL.md) | Goldstein, Trojanowicz | 지역사회 협력 치안 설계 |
+| [`restorative-justice`](restorative-justice/SKILL.md) | **Zehr, Braithwaite** | **회복적 경찰활동 — 처벌 대신 피해 회복·대화** |
+| [`third-party`](third-party/SKILL.md) | **Mazerolle & Ransley** | **제3자(건물주·학교·플랫폼) 통한 범죄기회 제거** |
 | [`broken-windows`](broken-windows/SKILL.md) | Wilson & Kelling (비판적 재해석) | 무질서 대응의 함정 이해 |
 
 ### 메타 라우터
