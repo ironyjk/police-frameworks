@@ -40,14 +40,19 @@
         "./sara",
         "./crime-triangle",
         "./cpted",
+        "./scp",
         "./hot-spots",
         "./ilp",
+        "./repeat-victimization",
         "./peace-model",
         "./cognitive-interview",
+        "./trauma-informed",
         "./bcsm",
         "./icat",
         "./procedural-justice",
         "./cop",
+        "./restorative-justice",
+        "./third-party",
         "./broken-windows"
       ]
     }

@@ -1,7 +1,7 @@
 ---
 name: peel
 version: "0.2.0"
-description: "Peel — 경찰 프레임워크 메타 라우터. Sir Robert Peel(1829)의 9대 원칙을 뿌리로 하며, 상황을 입력하면 12개 근거기반 경찰활동 프레임워크(SARA, Crime Triangle, CPTED, Hot Spots, ILP, PEACE, Cognitive Interview, BCSM, ICAT, Procedural Justice, COP, Broken Windows)에서 최적 조합을 선택·시퀀싱해 안내합니다. /think가 경영전략용, /counsel이 심리상담용이라면 /peel은 경찰활동용입니다. 한국 경찰 및 경찰발전협의회 실무 맥락에 맞게 재작성됨."
+description: "Peel — 경찰 프레임워크 메타 라우터. Sir Robert Peel(1829)의 9대 원칙을 뿌리로 하며, 상황을 입력하면 17개 근거기반 경찰활동 프레임워크(SARA, Crime Triangle, CPTED, Hot Spots, ILP, PEACE, Cognitive Interview, BCSM, ICAT, Procedural Justice, COP, Broken Windows)에서 최적 조합을 선택·시퀀싱해 안내합니다. /think가 경영전략용, /counsel이 심리상담용이라면 /peel은 경찰활동용입니다. 한국 경찰 및 경찰발전협의회 실무 맥락에 맞게 재작성됨."
 tools:
   - Read
   - Write
@@ -12,14 +12,19 @@ dependencies:
   - sara
   - crime-triangle
   - cpted
+  - scp (Situational Crime Prevention — CPTED의 상위 확장, 25가지 기회 감소)
   - hot-spots
   - ilp
+  - repeat-victimization (반복 피해자 보호 — 가정폭력·스토킹·상가절도)
   - peace-model
   - cognitive-interview
+  - trauma-informed (트라우마 인식 — 피해자 2차 가해 방지)
   - bcsm
   - icat
   - procedural-justice
   - cop
+  - restorative-justice (회복적 경찰활동 — 처벌 대신 피해 회복·대화)
+  - third-party (제3자 경찰활동 — 건물주·학교·플랫폼 통한 개입)
   - broken-windows
 ---
 
@@ -51,7 +56,7 @@ dependencies:
 
 ## 이것이 무엇인가
 
-`peel`은 프레임워크 자체가 아닙니다. 12개 근거기반 경찰활동 프레임워크 **위에 얹힌 지능형 라우팅 계층**입니다.
+`peel`은 프레임워크 자체가 아닙니다. 17개 근거기반 경찰활동 프레임워크 **위에 얹힌 지능형 라우팅 계층**입니다.
 
 일선 경찰관, 지구대장, 경찰서 생활안전계·여성청소년과·범죄예방진단팀이 상황을 설명하면 — 반복 민원, 핫스팟 의심 지역, 까다로운 조사 면담, 자살 시도 신고, 지역 불신 문제 — 이 에이전트가 상황을 분석하고 적절한 프레임워크(들)를 선택해 파이프라인으로 구성한 뒤 적용 접근을 안내합니다.
 
@@ -95,6 +100,11 @@ goal: "string"              # 무엇을 이루고 싶은가?
 | "공권력 불신", "악성 민원", "무례하다는 평가" | Procedural Justice | COP |
 | "주민과의 협력", "자율방범대", "지역 행사" | COP | Procedural Justice |
 | "무질서", "노숙인", "경범죄", "낙서" | Broken Windows (비판적) | COP, CPTED, Procedural Justice |
+| "기회 차단", "예방 전략", "25가지", "어떻게 막을까" | SCP | CPTED, Crime Triangle |
+| "또 당했다", "반복 피해", "재피해", "가정폭력 재발" | Repeat Victimization | ILP, Trauma-Informed |
+| "피해자가 힘들어한다", "진술 거부", "2차 가해", "트라우마" | Trauma-Informed | Cognitive Interview, PEACE |
+| "학교폭력 화해", "대화로 해결", "이웃 분쟁", "회복" | Restorative Justice | COP, Procedural Justice |
+| "건물주", "학교 연계", "플랫폼 협조", "지자체 공문" | Third-Party | COP, SCP |
 
 ---
 
@@ -134,6 +144,11 @@ goal: "string"              # 무엇을 이루고 싶은가?
 - **자살·인질 협상**: `BCSM` → (회복 단계) `Procedural Justice`
 - **지역 불신 개선**: `Procedural Justice` → `COP` → (필요시) `SARA`
 - **무질서 민원 (노숙/경범)**: `Broken Windows 비판적 검토` → `COP` → `Procedural Justice`
+- **가정폭력·스토킹 반복 신고**: `Repeat Victimization` → `Trauma-Informed` → `PEACE`
+- **학교폭력·경미 분쟁 화해**: `Restorative Justice` → `Procedural Justice` → `COP`
+- **예방 전략 수립 (비환경)**: `SCP 25기법` → `Crime Triangle` → `Third-Party`
+- **제3자 통한 환경·시설 개선**: `Third-Party` → `CPTED` → `SCP`
+- **피해자 진술 확보 (외상 있음)**: `Trauma-Informed` → `Cognitive Interview` → `PEACE`
 
 ### 3단계: 시퀀싱과 충돌 해결
 
