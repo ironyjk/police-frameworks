@@ -110,6 +110,19 @@ IMAGES = [
         "height": 720,
         "seed": 77,
     },
+    {
+        "key": "case5_fraud",
+        "prompt": (
+            "soft watercolor illustration, Korean mid-sized company office in afternoon, "
+            "a procurement manager at desk with laptop and mobile phone, warm window light, "
+            "cluttered paperwork, thoughtful concerned expression, calm but uncertain atmosphere, "
+            "painterly brushstrokes, muted warm palette, face turned away or blurred, "
+            "symbolic of fraud threat without being alarming, no visible text"
+        ),
+        "width": 1280,
+        "height": 720,
+        "seed": 88,
+    },
 ]
 
 
@@ -251,6 +264,11 @@ def main():
     print()
 
     for i, spec in enumerate(IMAGES, 1):
+        dest = OUT_DIR / f"{spec['key']}.png"
+        if dest.exists():
+            print(f"[{i}/{len(IMAGES)}] {spec['key']} — skipped (exists)")
+            print()
+            continue
         print(f"[{i}/{len(IMAGES)}]")
         try:
             generate_one(spec, client_id)
