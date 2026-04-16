@@ -1,7 +1,7 @@
 ---
 name: nichd-protocol
 version: "0.1.0"
-description: "NICHD 프로토콜(National Institute of Child Health and Human Development Protocol) — 아동 대상 수사면담의 국제 표준. Michael Lamb(2007)이 개발하고 전 세계 50개국 이상에서 사용. 아동의 발달 수준에 맞춘 비유도적(non-suggestive) 면담 구조로, 성인 인지면담(Cognitive Interview)과 원리가 다릅니다. 한국에서는 해바라기센터·아동보호전문기관에서 활용하며, 아동학대·성폭력 수사에 필수적입니다."
+description: "NICHD 프로토콜(National Institute of Child Health and Human Development Protocol) — 아동 대상 수사면담의 국제 표준. Michael Lamb 등이 1990년대~2000년대에 걸쳐 개발·표준화했으며 다수 국가에서 채택되었습니다. 아동의 발달 수준에 맞춘 비유도적(non-suggestive) 면담 구조로, 성인 인지면담(Cognitive Interview)과 원리가 다릅니다. 한국에서는 해바라기센터·아동보호전문기관에서 활용하며, 아동학대·성폭력 수사에 필수적입니다."
 tools:
   - Read
   - Write
@@ -162,7 +162,7 @@ tools:
 
 ### 국내 연구·제도
 - **해바라기센터** (전국 39개소, 2025 기준) — 19세 미만 성폭력 피해자·장애인 피해자 전담. NICHD 프로토콜 준수 훈련 이수 조사관 배치.
-- **아동보호전문기관** (전국 71개소) — 아동학대 전담, 경찰 수사와 병행.
+- **아동보호전문기관** (2023년 기준 전국 71개소, 보건복지부 소관·지자체 위탁 운영) — 아동학대 전담, 경찰 수사와 병행.
 - **법무부 진술조력인 제도** — 성폭력처벌법 전부개정(2012.12.19)으로 도입, **2013.12.19 시행**. 19세 미만 피해자·장애인 피해자의 수사·재판 과정에 전문 진술조력인 참여. NICHD 프로토콜 이해가 조력의 전제.
 - **법무부 (2020) 『아동·장애인 진술 조력인 운영 매뉴얼』** — NICHD 프로토콜 한국 실무 적용 지침.
 
