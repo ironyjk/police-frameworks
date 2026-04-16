@@ -265,12 +265,11 @@ ICAT의 가장 큰 적용 영역.
 
 ## 실증 효과
 
-### Louisville PD (Engel et al. 2020)
-- ICAT 훈련 전후 비교
-- **Use of force 28% 감소**
-- **시민 부상 26% 감소**
-- **경찰관 부상 36% 감소**
+### Louisville PD (Engel et al., 2020 보고서 / 2022 학술논문)
+- ICAT 훈련 전후 비교. Stepped-wedge RCT. 1,049명 경관 수료.
+- **물리력 사용 −28.1%** / **시민 부상 −26.3%** / **경찰관 부상 −36.0%**
 - 체포율은 변화 없음 (업무 수행에 부정적 영향 없음)
+- 출처: Engel et al. (2020) IACP 초기 보고서; 정식 논문은 2022년 *Criminology & Public Policy*
 
 ### 기타 연구
 - Tempe, AZ: 물리력 사건 감소

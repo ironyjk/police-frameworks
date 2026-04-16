@@ -2,6 +2,42 @@
 
 모든 주요 변경사항을 기록합니다.
 
+## [0.7.0] — 2026-04-16 (4인 에이전트 팀 팩트체크)
+
+### 수정 (10건 오류·부정확 인용 교정)
+
+**A. 학술 인용 오류**
+- **Kassin (2008) 허위자백 "4유형" → 3유형** (Voluntary / Compliant / Internalized). 원조 Kassin & Wrightsman (1985)은 3유형 "Coerced-Compliant"를 2008년 "Compliant"로 단순화. 4유형 표기는 오류. *(peace-model)*
+- **Campbell 메타분석 "65개 RCT" → "65개 연구(RCT 27 + 준실험 38)"**. Braga et al. (2019) 정확 서술. 범죄 약 16% 감소, 확산 효과. *(hot-spots)*
+- **Minneapolis 1995 "13% 감소" → "6~13% 감소 (신고), 관찰 무질서 약 50% 감소"**. Sherman & Weisburd 원문 정확 수치. *(hot-spots)*
+- **Memon et al. (2010) "25~85%" 출처 정정**. 이 수치는 Köhnken et al. (1999) 메타분석이 원전. Memon 2010 핵심 효과는 **Cohen's d = 0.87**. *(cognitive-interview)*
+- **Wood, Tyler, Papachristos (2020) PNAS — 2021년 정정 사실 명시**. 원 수치 민원 10.0%·물리력 6.4% 감소 보고 후 정정으로 효과 크기 불확실성 증가. *(procedural-justice)*
+- **Campbell 2003 "목 조르기 7.5배" → Glass et al. (2008, Campbell 공저) OR 7.48 (95% CI 4.53–12.35)**. 완성 살인 케이스-대조 연구 정확 서술. *(risk-assessment, handbook)*
+- **Engel et al. (2020) 정확화**: "2020년 IACP 보고서 / 2022년 *Criminology & Public Policy* 정식 논문". 수치 28.1% / 26.3% / 36.0% 정확. *(icat)*
+
+**B. 한국 제도·법령 명칭 정정**
+- **"경찰청 인권행동강령" → "경찰관 인권행동강령"** (경찰청 훈령 **제967호, 2020.6** 제정). "경찰관" 두 글자 누락 오류. *(procedural-justice)*
+- **경찰청 "가정폭력 위험성 판단 체크리스트 (2020~)" → 「범죄 피해자 위험성 판단 체크리스트」(2023.5.22 전국 시행 개정판)**. 2022년 신당역 스토킹 살인 이후 대폭 개선됨. *(risk-assessment)*
+- **판교신도시 CPTED "2005년 시범" → "2005년 국내 CPTED 원년 (부천시 최초 시범), 판교는 이후 확대(2005~2009)"**. 판교는 2005 시범이 아니라 CPTED 정책 도입 시기에 설계 반영. *(cpted)*
+- **Broken Windows 비판 — Zimring (2012) 논지 정확화**: "뉴욕만이 아님" → "뉴욕은 특히 더 많이 감소(40% vs 80%)한 초과분 설명 필요". *(broken-windows)*
+- **Braga et al. (2015) Broken Windows 메타분석 뉘앙스 보강**: 전체 modest 효과 + 전략 유형별 분화 (문제해결형 효과 O / Zero-Tolerance식 효과 X). *(broken-windows)*
+
+### 검증 확인 (정확 — 수정 불필요)
+- Koper 1995 11~15분 ✓
+- Philadelphia Foot Patrol 23% ✓
+- PERF 30 Guiding Principles 2016년 ✓
+- Wolfgang 1972: 6% → 범죄 52% ✓
+- Lieberman 2007 affect labeling 편도체 ✓
+- Van Hasselt 2006 Crisis Negotiation Training ✓
+- Mazerolle et al. 2013 Queensland Community Engagement Trial ✓
+- Sampson & Raudenbush 1999 AJS ✓
+- Gill et al. 2014 COP Campbell review ✓
+- 아동보호전문기관 71개소 ✓
+- 염리동 소금길 2012 (서울시 범죄예방디자인 1호) ✓
+- 경찰관직무집행법 제4조 (보호조치), 제6조 (범죄의 예방과 제지) ✓
+- 류준혁 (2015) 치안정책연구 논문 ✓
+- 지구대 2003.8.1 전국 시행 ✓
+
 ## [0.6.0] — 2026-04-16
 
 ### 추가

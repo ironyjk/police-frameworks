@@ -118,8 +118,8 @@ tools:
 ## 효과 — 실증 연구
 
 ### 메타분석 (Köhnken et al., 1999; Memon et al., 2010)
-- 평균 **25~85% 더 많은 정확한 정보** 인출 (표준 면담 대비)
-- 오류 비율 증가는 미미 (정보량 증가가 훨씬 큼)
+- **Köhnken et al. (1999)**: 개별 실험에서 **25~85% 더 많은 정확한 정보** 인출 범위
+- **Memon et al. (2010)**: 46개 논문 재분석. 핵심 효과 **Cohen's d = 0.87** (정확 세부 대폭 증가). 오류는 소폭 증가, 허구(confabulation)는 차이 없음.
 - 아동, 고령자, 지적장애인 모두에게 효과 확인
 
 ### 한계
@@ -275,6 +275,6 @@ tools:
 
 - Fisher, R. & Geiselman, E. (1992). *Memory-Enhancing Techniques for Investigative Interviewing: The Cognitive Interview*. Charles C. Thomas.
 - Geiselman, E., et al. (1984). "Enhancement of Eyewitness Memory: An Empirical Evaluation of the Cognitive Interview." *Journal of Police Science and Administration*.
-- Köhnken, G., et al. (1999). "The Cognitive Interview: A Meta-Analysis." *Psychology, Crime & Law*, 5, 3-27.
-- Memon, A., Meissner, C., & Fraser, J. (2010). "The Cognitive Interview: A Meta-Analytic Review." *Psychology, Public Policy, and Law*, 16(4), 340-372.
+- Köhnken, G., Milne, R., Memon, A., & Bull, R. (1999). "The Cognitive Interview: A Meta-Analysis." *Psychology, Crime & Law*, 5, 3-27. — 이 메타분석에서 "25~85% 더 많은 정확한 정보" 범위가 원전.
+- Memon, A., Meissner, C., & Fraser, J. (2010). "The Cognitive Interview: A Meta-Analytic Review." *Psychology, Public Policy, and Law*, 16(4), 340-372. — 46개 논문 메타분석. 핵심 효과: **Cohen's d = 0.87** (정확 세부사항 대폭 증가), 오류는 소폭 증가, 허구(confabulation) 비율은 차이 없음.
 - Milne, R. & Bull, R. (2002). "Back to Basics: A Componential Analysis of the Original Cognitive Interview Mnemonics." *Applied Cognitive Psychology*.

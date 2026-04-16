@@ -204,16 +204,15 @@ tools:
 
 ---
 
-## 허위 자백의 4가지 유형 (Kassin)
+## 허위 자백의 3가지 유형 (Kassin, 2008)
 
 이해해 두면 PEACE 원칙이 왜 중요한지 명확해집니다:
 
-1. **Voluntary False Confession** — 주목 욕구·정신 불안정
-2. **Compliant False Confession** — 압박에서 벗어나려고 일단 자백 ("나가게 해 주면 뭐든 인정")
-3. **Internalized False Confession** — 실제로 자신이 했다고 믿게 됨 (청소년·취약자)
-4. **Coerced Compliant** — 명시적 협박
+1. **Voluntary False Confession** — 자발적. 주목 욕구·정신 불안정으로 스스로 허위 자백.
+2. **Compliant False Confession** — 순응적. 압박에서 벗어나려고 일단 자백 ("나가게 해 주면 뭐든 인정"). ※ Kassin & Wrightsman (1985) 원조 명칭은 "Coerced-Compliant"였으나 2008년 논문에서 "Compliant"로 단순화.
+3. **Internalized False Confession** — 내면화. 실제로 자신이 했다고 믿게 됨 (청소년·취약자).
 
-→ PEACE는 2, 3, 4 유형 발생을 구조적으로 차단합니다.
+→ PEACE는 2, 3 유형 발생을 구조적으로 차단합니다.
 
 ---
 
