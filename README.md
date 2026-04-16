@@ -1,6 +1,6 @@
 # Police Frameworks
 
-> A meta-router and collection of 17 evidence-based policing frameworks for Claude Code.
+> A meta-router and collection of 19 evidence-based policing frameworks for Claude Code.
 
 **Created by 최희철 (Choi Hee Chul)** — software engineer, member of the **경주경찰서 경찰발전협의회 (Gyeongju Police Station Police Development Council — a volunteer support organization)**. Built as a **reference resource for frontline Korean police officers**, not as an operational tool for the council itself. The council is a community support body; crime analysis and enforcement are the work of police officers.
 
@@ -12,7 +12,7 @@ You describe a situation (a hot spot, a difficult interview, a crisis call, a co
 
 ## What's Inside
 
-### 4 Axes × 17 Frameworks
+### 4 Axes × 19 Frameworks
 
 **Axis 1 — Problem Analysis & Prevention (7)**
 - `sara` — SARA model (Scanning, Analysis, Response, Assessment)
@@ -23,10 +23,12 @@ You describe a situation (a hot spot, a difficult interview, a crisis call, a co
 - `ilp` — Intelligence-Led Policing (Ratcliffe)
 - `repeat-victimization` — **Repeat Victimization** (Farrell & Pease) — protect past victims
 
-**Axis 2 — Investigation, Interview & Victim (3)**
+**Axis 2 — Investigation, Interview & Victim (5)**
 - `peace-model` — PEACE investigative interviewing (UK College of Policing)
 - `cognitive-interview` — Enhanced Cognitive Interview (Fisher & Geiselman)
 - `trauma-informed` — **Trauma-Informed Policing** (SAMHSA 4R) — prevent secondary harm
+- `risk-assessment` — **Victim Risk Assessment** (DASH, DA, SPJ) — how dangerous is the situation?
+- `nichd-protocol` — **NICHD Child Interview Protocol** (Lamb) — non-suggestive forensic interviewing for children
 
 **Axis 3 — Field Response & Crisis (2)**
 - `bcsm` — Behavioral Change Stairway Model (FBI crisis negotiation)

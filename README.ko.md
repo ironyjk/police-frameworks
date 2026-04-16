@@ -1,6 +1,6 @@
 # Police Frameworks (경찰 프레임워크 툴킷)
 
-> Claude Code를 위한 17개 근거 기반(Evidence-Based) 경찰활동 프레임워크 메타 라우터
+> Claude Code를 위한 19개 근거 기반(Evidence-Based) 경찰활동 프레임워크 메타 라우터
 
 **작성자**: **최희철** — 소프트웨어 개발자 / **경주경찰서 경찰발전협의회 회원**
 **만든 이유**: 한국 경찰 실무자에게 드리는 **참고 자료**. 경찰발전협의회는 봉사단체이며, 실제 범죄 분석·수사·집행은 경찰의 몫입니다. 이 프로젝트는 경발협이 쓰는 도구가 아니라, 경발협 회원인 소프트웨어 개발자가 해외 학술 프레임워크를 경찰 실무 맥락으로 정리해 **경찰관에게 드리는 참고 자료**입니다.
@@ -24,7 +24,7 @@
 
 ---
 
-## 구성 (4개 축 × 17개 프레임워크)
+## 구성 (4개 축 × 19개 프레임워크)
 
 ### 축 1 — 문제 분석·예방 (7)
 
@@ -38,13 +38,15 @@
 | [`ilp`](ilp/SKILL.md) | Ratcliffe | 정보분석 → 의사결정 → 영향 |
 | [`repeat-victimization`](repeat-victimization/SKILL.md) | **Farrell & Pease** | **반복 피해자 보호 — 한 번 당하면 또 당한다** |
 
-### 축 2 — 조사·면담·피해자 (3)
+### 축 2 — 조사·면담·피해자 (5)
 
 | 프레임워크 | 창시자 | 쓸 때 |
 |---|---|---|
 | [`peace-model`](peace-model/SKILL.md) | 영국 경찰청 (1992) | 피의자/참고인 윤리적 조사면담 |
 | [`cognitive-interview`](cognitive-interview/SKILL.md) | Fisher & Geiselman | 피해자/목격자 기억 인출 최대화 |
 | [`trauma-informed`](trauma-informed/SKILL.md) | **SAMHSA** | **트라우마 인식 — 피해자 2차 가해 방지, 4R 원칙** |
+| [`risk-assessment`](risk-assessment/SKILL.md) | **Campbell, SafeLives** | **피해자 위험성 평가 — DASH/DA, 가정폭력 살인 위험도** |
+| [`nichd-protocol`](nichd-protocol/SKILL.md) | **Michael Lamb** | **NICHD 아동면담 — 3~14세 비유도적 면담 국제 표준** |
 
 ### 축 3 — 현장대응·위기 (2)
 

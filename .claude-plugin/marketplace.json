@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "police-frameworks",
-      "description": "경찰 프레임워크 17개 + /peel 메타 라우터 (SARA, CPTED, PEACE, BCSM, ICAT, Procedural Justice 등). 한국 경찰 실무자 참고 자료.",
+      "description": "경찰 프레임워크 19개 + /peel 메타 라우터 (SARA, CPTED, PEACE, BCSM, ICAT, Procedural Justice 등). 한국 경찰 실무자 참고 자료.",
       "version": "0.2.0",
       "author": {
         "name": "최희철 (Choi Hee Chul)",
@@ -53,7 +53,9 @@
         "./cop",
         "./restorative-justice",
         "./third-party",
-        "./broken-windows"
+        "./broken-windows",
+        "./risk-assessment",
+        "./nichd-protocol"
       ]
     }
   ]
