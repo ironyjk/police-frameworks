@@ -215,6 +215,17 @@ SARA의 A(Analysis) 단계에서 문제를 이 6개 박스로 분해합니다:
 
 ---
 
+## 한국 법령·연구 맥락
+
+### 국내 연구
+- 한국 범죄학 교과서(이윤호 등)에서 일상활동이론은 기본 이론으로 소개되나, 6박스(가해자·대상·장소 + 3억제자) 분해까지 실무 워크시트로 활용한 사례는 드묾.
+- 경찰대학 강의에서 Crime Triangle은 SARA의 Analysis 단계 도구로 학생 과제에 자주 등장.
+
+### 실무 유의
+- 한국은 **장소 관리자(Manager)** 를 움직이는 법적 도구가 상대적으로 많습니다 — 건축법, 청소년보호법, 영업허가 조건, 공동주택관리법 등. Place·Manager 박스의 개입 수단이 미국보다 풍부합니다.
+
+---
+
 ## 참고 문헌
 
 - Cohen, L. & Felson, M. (1979). "Social Change and Crime Rate Trends: A Routine Activity Approach." *American Sociological Review*, 44, 588-608.
