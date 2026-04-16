@@ -1,5 +1,5 @@
 """
-Police Frameworks — 소개 슬라이드 생성기 (60대 경찰관 대상)
+Police Frameworks — 소개 슬라이드 생성기 (비전문가 경찰관 대상)
 
 구조 (27장):
     1        표지
@@ -1474,11 +1474,25 @@ add_footer(s, 23)
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
 add_title_bar(s, "어디에서 쓰시면 되나요?",
-              "Claude Code Desktop 을 깔아주세요 — 일반 채팅창으로는 설치가 안 됩니다")
+              "Claude Desktop 을 깔고 사이드바 </> Code 화면에서 설치하세요")
 
+# 구독 필수 안내 배너
+sub_box = s.shapes.add_shape(
+    MSO_SHAPE.ROUNDED_RECTANGLE,
+    Inches(0.6), Inches(1.5), Inches(12.1), Inches(0.75)
+)
+sub_box.fill.solid()
+sub_box.fill.fore_color.rgb = YELLOW_HL
+sub_box.line.color.rgb = RED
+sub_box.line.width = Pt(2)
+sub_box.adjustments[0] = 0.25
+
+add_text(s, "💰  Claude 구독이 먼저 필요합니다",
+         0.85, 1.58, 12, 0.35, size=14, bold=True, color=RED)
 add_text(s,
-         "한 가지만 기억하세요 — 설치는 반드시 Claude Code Desktop 에서",
-         0.6, 1.6, 12, 0.5, size=17, bold=True, color=NAVY)
+         "Claude Pro (월 약 2.8만원) 또는 Claude Max (월 약 14만원, 실전 사용시 권장).  "
+         "구독 없이는 Skills 기능 자체가 안 열립니다.",
+         0.85, 1.9, 12, 0.3, size=12, color=GRAY_DARK)
 
 products = [
     {
@@ -1488,7 +1502,7 @@ products = [
         "features": [
             "사이드바 </> 아이콘 클릭",
             "폴더 열고 말로 부탁",
-            "60대에게도 가능",
+            "비전문가도 가능",
         ],
         "note": "claude.com/download 에서 다운로드",
         "color": GOLD,
@@ -1504,7 +1518,7 @@ products = [
         "features": [
             "$ claude /plugin ...",
             "IT 담당이면 가장 빠름",
-            "60대 단독 사용 비추천",
+            "비전문가 단독 사용 비추천",
         ],
         "note": "개발자 도구 — 터미널 필요",
         "color": NAVY,

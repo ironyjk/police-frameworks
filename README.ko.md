@@ -67,6 +67,22 @@
 
 ## 설치
 
+**가장 쉬운 방법 — Claude Code 에게 부탁하세요.**
+
+**Claude Desktop** 을 여시고 사이드바의 `</>` Code 아이콘을 클릭해 Code 화면으로 전환, 아무 폴더나 하나 선택하신 다음 채팅창에 아래 한 줄을 붙여넣으세요 (Claude Code CLI 를 쓰시는 경우에도 동일):
+
+> "https://github.com/ironyjk/police-frameworks 플러그인을 저한테 설치해 주세요."
+
+Claude 가 `/plugin marketplace add ironyjk/police-frameworks` 와 `/plugin install police-frameworks@police-frameworks` 를 자동으로 실행해 12개 프레임워크와 `/peel` 메타 라우터를 한 번에 등록합니다. 설치 중 권한 팝업이 뜨면 **"허용"** 또는 **"한 번만 허용"** 을 클릭하세요.
+
+**필수 조건:**
+- **Claude Pro** (월 ~2.8만원) 또는 **Claude Max** (월 ~14만원, 실전용 권장) 구독
+- Claude Desktop 앱 (`claude.com/download`) — 설치는 반드시 사이드바의 `</>` Code 화면에서 진행
+- 일반 Chat 화면 또는 Cowork 샌드박스에서는 스킬 폴더가 읽기 전용이라 설치 불가
+
+<details>
+<summary>수동 설치 (고급 사용자)</summary>
+
 ```bash
 # 전체 툴킷 클론
 git clone https://github.com/ironyjk/police-frameworks.git ~/.claude/skills/police-frameworks
@@ -74,6 +90,8 @@ git clone https://github.com/ironyjk/police-frameworks.git ~/.claude/skills/poli
 # 또는 install.sh 사용
 curl -sL https://raw.githubusercontent.com/ironyjk/police-frameworks/main/install.sh | bash
 ```
+
+</details>
 
 각 프레임워크는 독립적인 Claude Code Skill입니다. 개별 호출하거나 `/peel` 메타 라우터를 통해 사용할 수 있습니다. 샘플 테스트는 [docs/sample-test.md](docs/sample-test.md)를 참조하세요.
 

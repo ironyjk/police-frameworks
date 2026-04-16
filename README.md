@@ -41,6 +41,19 @@ You describe a situation (a hot spot, a difficult interview, a crisis call, a co
 
 ## Installation
 
+**Easiest — just ask Claude Code to do it.**
+
+In **Claude Desktop** (click the `</>` Code view in the sidebar, open any folder) or **Claude Code CLI**, paste:
+
+> "Install this plugin for me: https://github.com/ironyjk/police-frameworks"
+
+Claude will run `/plugin marketplace add ironyjk/police-frameworks` and `/plugin install police-frameworks@police-frameworks` for you. Approve permission prompts with "Allow" when asked.
+
+**Requirements:** Claude **Pro** (~$20/mo) or **Max** (~$100/mo, recommended for real work). Plain `claude.ai` web chat or the sandboxed Cowork view cannot install skills — use Claude Desktop's Code view or Claude Code CLI.
+
+<details>
+<summary>Manual install (advanced)</summary>
+
 ```bash
 # Clone the full toolkit
 git clone https://github.com/ironyjk/police-frameworks.git ~/.claude/skills/police-frameworks
@@ -48,6 +61,8 @@ git clone https://github.com/ironyjk/police-frameworks.git ~/.claude/skills/poli
 # Or use the install script
 curl -sL https://raw.githubusercontent.com/ironyjk/police-frameworks/main/install.sh | bash
 ```
+
+</details>
 
 Each framework is a Claude Code Skill with its own `SKILL.md`. You can use them individually or through the `/peel` meta-router.
 
