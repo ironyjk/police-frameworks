@@ -1482,15 +1482,15 @@ add_text(s,
 
 products = [
     {
-        "name": "Claude Code Desktop",
+        "name": "Claude Desktop · Code 화면",
         "badge": "권장",
-        "desc": "노트북에 깔아서 쓰는\nClaude Code 의 GUI 앱",
+        "desc": "Claude Desktop 앱을 깔고\n사이드바의 </> Code 화면으로",
         "features": [
+            "사이드바 </> 아이콘 클릭",
             "폴더 열고 말로 부탁",
-            "Claude가 자동으로 설치",
             "60대에게도 가능",
         ],
-        "note": "code.claude.com 에서 다운로드",
+        "note": "claude.com/download 에서 다운로드",
         "color": GOLD,
         "fill": YELLOW_HL,
         "border_w": 3,
@@ -1506,7 +1506,7 @@ products = [
             "IT 담당이면 가장 빠름",
             "60대 단독 사용 비추천",
         ],
-        "note": "이 노트북에 이미 설치됨",
+        "note": "개발자 도구 — 터미널 필요",
         "color": NAVY,
         "fill": WHITE,
         "border_w": 1.5,
@@ -1514,15 +1514,15 @@ products = [
         "is_disabled": False,
     },
     {
-        "name": "일반 클로드 채팅 · Cowork",
+        "name": "일반 Chat 화면 · Cowork",
         "badge": "설치 불가",
-        "desc": "claude.ai 웹 대화창 또는\nCowork 샌드박스 모드",
+        "desc": "Claude Desktop 의 Chat 화면\n또는 claude.ai 웹 채팅",
         "features": [
             "샌드박스 읽기 전용",
             "스킬 폴더에 못 씀",
             "설치 요청 → 실패",
         ],
-        "note": "쓰지 마세요 (설치는)",
+        "note": "설치는 Code 화면에서",
         "color": GRAY_MID,
         "fill": GRAY_PALE,
         "border_w": 1.5,
@@ -1603,74 +1603,73 @@ add_footer(s, 24)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 25 — Claude Code Desktop 설치 5단계
+# Slide 25 — Claude Desktop Code 화면 설치 6단계
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "Claude Code Desktop 설치 · 5단계",
-              "폴더 선택 단계가 중요합니다 — 놓치면 설치가 안 됩니다")
+add_title_bar(s, "Claude Desktop 설치 · 6단계",
+              "3단계 \"사이드바 </> 클릭\" 을 놓치면 안 됩니다")
 
 install_steps = [
     {
         "num": "1",
-        "title": "Claude Code Desktop 다운로드",
-        "desc": "code.claude.com 접속 → 운영체제에 맞는 설치 파일 내려받기",
-        "note": "윈도우·맥 모두 지원",
-        "who": "혼자",
+        "title": "Claude Desktop 앱 다운로드",
+        "desc": "claude.com/download 접속 → 운영체제에 맞는 설치 파일",
+        "critical": False,
     },
     {
         "num": "2",
-        "title": "앱 설치 후 실행 · 로그인",
-        "desc": "일반 프로그램처럼 더블클릭해 설치. 앱 열고 Claude 계정으로 로그인.",
-        "note": "Max 또는 Pro 구독 필요",
-        "who": "혼자",
+        "title": "앱 설치 · 로그인",
+        "desc": "프로그램처럼 설치 후 Max 또는 Pro 계정으로 로그인",
+        "critical": False,
     },
     {
         "num": "3",
-        "title": "폴더 선택 (★ 중요!)",
-        "desc": "앱이 처음 열리면 \"Open Folder\" 또는 \"폴더 열기\" 버튼이 보입니다. "
-                "내 문서 폴더(Documents)나 비어있는 폴더 아무거나 선택하세요.",
-        "note": "이 단계를 놓치면 Claude가 아무것도 못 합니다",
-        "who": "혼자",
+        "title": "사이드바에서 </> 아이콘 클릭",
+        "desc": "왼쪽 위 사이드바 상단 3개 아이콘 중 맨 오른쪽 </> 를 클릭해 Code 화면으로",
+        "critical": True,
     },
     {
         "num": "4",
-        "title": "채팅창에 설치 요청 붙여넣기",
-        "desc": "하단 채팅창에 다음 한 줄을 복사해서 붙여넣고 엔터:\n"
-                "\"ironyjk/police-frameworks 플러그인을 저한테 설치해 주세요.\"",
-        "note": "슬래시 명령어 몰라도 됩니다",
-        "who": "혼자",
+        "title": "폴더 선택 (아무거나 OK)",
+        "desc": "\"Open Folder\" 버튼 → 내 문서(Documents) 등 빈 폴더 아무거나",
+        "critical": False,
     },
     {
         "num": "5",
-        "title": "Claude이 자동 설치 → 새 대화창 열기",
-        "desc": "Claude가 /plugin marketplace add + /plugin install 을 자동 실행. "
-                "설치가 끝나면 새 대화창을 하나 열어 \"peel 로 민원 분석해줘\" 로 사용.",
-        "note": "설치는 한 번만, 사용은 계속",
-        "who": "혼자",
+        "title": "채팅창에 설치 요청 붙여넣기",
+        "desc": "\"https://github.com/ironyjk/police-frameworks 플러그인을 저한테 설치해 주세요\"",
+        "critical": False,
+    },
+    {
+        "num": "6",
+        "title": "설치 완료 → 새 대화창에서 사용",
+        "desc": "Claude가 자동 설치. 새 대화에서 \"peel 로 민원 분석해줘\" 로 시작",
+        "critical": False,
     },
 ]
 
-y = 1.5
+# 왼쪽: 6 단계
+y = 1.35
 for step in install_steps:
-    is_critical = step["num"] == "3"
+    is_critical = step.get("critical", False)
     color = RED if is_critical else NAVY
     fill = YELLOW_HL if is_critical else WHITE
 
     # 번호 원
     circle = s.shapes.add_shape(
-        MSO_SHAPE.OVAL, Inches(0.55), Inches(y + 0.1), Inches(0.85), Inches(0.85)
+        MSO_SHAPE.OVAL, Inches(0.55), Inches(y + 0.07), Inches(0.75), Inches(0.75)
     )
     circle.fill.solid()
     circle.fill.fore_color.rgb = color
     circle.line.fill.background()
-    add_text(s, step["num"], 0.55, y + 0.22, 0.85, 0.65,
-             size=26, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    add_text(s, step["num"], 0.55, y + 0.18, 0.75, 0.55,
+             size=24, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 
     # 내용 박스
     box = s.shapes.add_shape(
         MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(1.55), Inches(y), Inches(9.55), Inches(1.05)
+        Inches(1.42), Inches(y), Inches(6.45), Inches(0.88)
     )
     box.fill.solid()
     box.fill.fore_color.rgb = fill
@@ -1678,24 +1677,78 @@ for step in install_steps:
     box.line.width = Pt(2.5 if is_critical else 1.2)
     box.adjustments[0] = 0.15
 
-    add_text(s, step["title"], 1.75, y + 0.08, 9.2, 0.4,
-             size=15, bold=True, color=color)
-    add_text(s, step["desc"], 1.75, y + 0.42, 9.2, 0.6,
-             size=11, color=GRAY_DARK, line_spacing=1.3)
+    add_text(s, step["title"], 1.58, y + 0.06, 6.15, 0.35,
+             size=13, bold=True, color=color)
+    add_text(s, step["desc"], 1.58, y + 0.38, 6.15, 0.5,
+             size=10, color=GRAY_DARK, line_spacing=1.25)
 
-    # 우측 노트 태그
-    note_box = s.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(11.25), Inches(y + 0.3), Inches(1.95), Inches(0.45)
-    )
-    note_box.fill.solid()
-    note_box.fill.fore_color.rgb = color
-    note_box.line.fill.background()
-    note_box.adjustments[0] = 0.3
-    add_text(s, step["note"], 11.25, y + 0.39, 1.95, 0.3,
-             size=9, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    y += 0.95
 
-    y += 1.17
+# 오른쪽: 스크린샷 + 안내
+add_text(s, "3단계  ·  사이드바 여기를 클릭",
+         8.1, 1.35, 5.1, 0.4, size=13, bold=True, color=RED)
+
+add_image(s, IMG / "sidebar_screenshot.png", 8.1, 1.75, 4.6, 2.7)
+
+# </> 위치 강조 원
+# 스크린샷 속 </> 아이콘 위치를 원으로 강조
+hl_circle = s.shapes.add_shape(
+    MSO_SHAPE.OVAL, Inches(9.2), Inches(2.19), Inches(0.55), Inches(0.45)
+)
+hl_circle.fill.background()
+hl_circle.line.color.rgb = RED
+hl_circle.line.width = Pt(4.5)
+
+# 설명 박스
+exp_box = s.shapes.add_shape(
+    MSO_SHAPE.ROUNDED_RECTANGLE,
+    Inches(8.1), Inches(4.6), Inches(4.9), Inches(0.9)
+)
+exp_box.fill.solid()
+exp_box.fill.fore_color.rgb = WHITE
+exp_box.line.color.rgb = NAVY
+exp_box.line.width = Pt(1.2)
+exp_box.adjustments[0] = 0.08
+add_text(s,
+         "사이드바 맨 오른쪽 </> 가 Code 화면.\n"
+         "여기서 설치해야만 작동합니다.",
+         8.3, 4.72, 4.6, 0.7,
+         size=12, color=GRAY_DARK, line_spacing=1.35)
+
+# 꼭 기억 박스 (2개 경고)
+warn_box = s.shapes.add_shape(
+    MSO_SHAPE.ROUNDED_RECTANGLE,
+    Inches(8.1), Inches(5.6), Inches(4.9), Inches(1.35)
+)
+warn_box.fill.solid()
+warn_box.fill.fore_color.rgb = YELLOW_HL
+warn_box.line.color.rgb = RED
+warn_box.line.width = Pt(2)
+warn_box.adjustments[0] = 0.12
+
+add_text(s, "⚠  꼭 기억하세요", 8.3, 5.7, 4.7, 0.35,
+         size=12, bold=True, color=RED)
+
+tb_warn = s.shapes.add_textbox(
+    Inches(8.3), Inches(6.02), Inches(4.65), Inches(0.95)
+)
+tf_w = tb_warn.text_frame
+tf_w.word_wrap = True
+tf_w.margin_left = tf_w.margin_right = tf_w.margin_top = tf_w.margin_bottom = 0
+warn_items = [
+    "Chat 화면이 아닌 </> Code 화면에서만 설치",
+    "권한 팝업이 뜨면 \"허용\" 또는 \"한 번만 허용\" 클릭",
+]
+for i, w in enumerate(warn_items):
+    p = tf_w.paragraphs[0] if i == 0 else tf_w.add_paragraph()
+    p.text = "•  " + w
+    p.line_spacing = 1.3
+    p.space_after = Pt(2)
+    for run in p.runs:
+        run.font.name = FONT
+        run.font.size = Pt(10)
+        run.font.bold = True
+        run.font.color.rgb = GRAY_DARK
 
 add_footer(s, 25)
 
