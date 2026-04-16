@@ -289,6 +289,8 @@ CASES = [
                     "조명 LED 교체 예산 요청 공문 발송",
                     "조경 가지치기·CCTV 각도 조정",
                 ],
+                "highlight": True,
+                "highlight_reason": "한 번 고치면 계속 효과. 순찰 강화보다 장기적으로 싸고 강함.",
             },
             {
                 "title": "COP 파트너십 — 학교·센터·편의점",
@@ -391,6 +393,8 @@ CASES = [
                     "핫스팟 블록 상위 3곳 선정",
                     "Koper 15분 규칙 기반 순찰 배치 계획 수립",
                 ],
+                "highlight": True,
+                "highlight_reason": "분석 한 번이 이후 모든 배치·예산·설득의 근거. 작은 노력, 큰 파급력.",
             },
             {
                 "title": "COP 상인·주민 협의체",
@@ -527,6 +531,8 @@ CASES = [
                     "CCTV 각도·사각지대 매핑",
                     "차단기·출입 통제 작동 확인, 개선 우선순위 작성",
                 ],
+                "highlight": True,
+                "highlight_reason": "점검 한 번의 결과물이 개선 공사 전체 근거. 순찰 강화 대체 가능.",
             },
             {
                 "title": "COP 관리공단·기업 협력",
@@ -629,6 +635,8 @@ CASES = [
                     "4요소 언어로 사건을 다시 설명",
                     "필요 시 사과, 후속 조치 약속",
                 ],
+                "highlight": True,
+                "highlight_reason": "전화 한 통으로 신뢰가 복구됩니다. 노력 대비 효과가 가장 큰 개입.",
             },
             {
                 "title": "유사 민원 빈도 확인",
@@ -744,6 +752,8 @@ CASES = [
                     "실제 사칭 캡처 포함 교육 자료 개발",
                     "\"신규 계좌 입금 전 2인 재확인\" 프로토콜 배포",
                 ],
+                "highlight": True,
+                "highlight_reason": "가해자 검거보다 훨씬 싸고 빠릅니다. 피해자 쪽만 바꿔도 대부분 막힙니다.",
             },
             {
                 "title": "조기 경보 네트워크",
@@ -906,9 +916,15 @@ def make_case_slide_b(prs, case, page_no):
 def make_case_slide_c(prs, case, page_no):
     s = prs.slides.add_slide(blank)
     set_background(s, BG)
+
+    subtitle = case.get("c_subtitle", "")
+    if subtitle:
+        subtitle += "     ★ = 가장 적은 노력으로 가장 큰 효과"
+    else:
+        subtitle = "★ = 가장 적은 노력으로 가장 큰 효과"
     add_title_bar(s,
                   f"사례 {case['num']} · 구체적인 실행 방안",
-                  case.get("c_subtitle", ""))
+                  subtitle)
 
     actions = case["c_actions"][:6]
 
@@ -925,6 +941,7 @@ def make_case_slide_c(prs, case, page_no):
         if i >= len(positions):
             break
         x, y = positions[i]
+        is_hl = action.get("highlight", False)
 
         # 카드 박스
         box = s.shapes.add_shape(
@@ -932,9 +949,9 @@ def make_case_slide_c(prs, case, page_no):
             Inches(x), Inches(y), Inches(card_w), Inches(card_h)
         )
         box.fill.solid()
-        box.fill.fore_color.rgb = WHITE
-        box.line.color.rgb = NAVY
-        box.line.width = Pt(1.3)
+        box.fill.fore_color.rgb = YELLOW_HL if is_hl else WHITE
+        box.line.color.rgb = RED if is_hl else NAVY
+        box.line.width = Pt(3 if is_hl else 1.3)
         box.adjustments[0] = 0.1
 
         # 좌측 번호 스트립
@@ -943,14 +960,33 @@ def make_case_slide_c(prs, case, page_no):
             Inches(x), Inches(y), Inches(0.5), Inches(card_h)
         )
         strip.fill.solid()
-        strip.fill.fore_color.rgb = NAVY
+        strip.fill.fore_color.rgb = RED if is_hl else NAVY
         strip.line.fill.background()
         add_text(s, str(i + 1), x, y + 0.55, 0.5, 0.6,
-                 size=26, bold=True, color=GOLD, align=PP_ALIGN.CENTER)
+                 size=26, bold=True, color=GOLD if not is_hl else WHITE,
+                 align=PP_ALIGN.CENTER)
+
+        # ★ 배지 (highlight 전용)
+        if is_hl:
+            badge = s.shapes.add_shape(
+                MSO_SHAPE.ROUNDED_RECTANGLE,
+                Inches(x + card_w - 1.35), Inches(y + 0.08),
+                Inches(1.25), Inches(0.32)
+            )
+            badge.fill.solid()
+            badge.fill.fore_color.rgb = RED
+            badge.line.fill.background()
+            badge.adjustments[0] = 0.4
+            add_text(s, "★  가장 효율적",
+                     x + card_w - 1.35, y + 0.12, 1.25, 0.28,
+                     size=10, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+            title_right = card_w - 1.5
+        else:
+            title_right = card_w - 0.75
 
         # 제목
-        add_text(s, action["title"], x + 0.6, y + 0.1, card_w - 0.75, 0.35,
-                 size=13, bold=True, color=NAVY)
+        add_text(s, action["title"], x + 0.6, y + 0.1, title_right, 0.35,
+                 size=13, bold=True, color=NAVY if not is_hl else RED)
 
         # 프레임워크 태그
         fw_text = "  ·  ".join(action["frameworks"])
@@ -962,7 +998,7 @@ def make_case_slide_c(prs, case, page_no):
         add_text(s, meta, x + 0.6, y + 0.67, card_w - 0.75, 0.25,
                  size=9, color=GRAY_MID)
 
-        # 단계 (3개)
+        # 단계 또는 highlight reason
         tb = s.shapes.add_textbox(
             Inches(x + 0.6), Inches(y + 0.92),
             Inches(card_w - 0.75), Inches(card_h - 1.0)
@@ -971,10 +1007,12 @@ def make_case_slide_c(prs, case, page_no):
         tf.word_wrap = True
         tf.margin_left = tf.margin_right = 0
         tf.margin_top = tf.margin_bottom = 0
-        for j, step in enumerate(action["steps"][:3]):
+
+        steps_to_show = action["steps"][:3]
+        for j, step in enumerate(steps_to_show):
             p = tf.paragraphs[0] if j == 0 else tf.add_paragraph()
             p.text = "•  " + step
-            p.line_spacing = 1.2
+            p.line_spacing = 1.15
             p.space_after = Pt(0)
             for run in p.runs:
                 run.font.name = FONT
@@ -1431,95 +1469,133 @@ add_footer(s, 23)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 24 — Claude Skills 어디에 깔리나
+# Slide 24 — 어디에서 쓰시면 되나요?
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "어디에 깔리나요?", "Claude 3가지 제품 어디서든 똑같이 작동합니다")
+add_title_bar(s, "어디에서 쓰시면 되나요?",
+              "Claude Code Desktop 을 깔아주세요 — 일반 채팅창으로는 설치가 안 됩니다")
 
 add_text(s,
-         "좋은 소식 — 한 번 깔면 세 곳 모두에서 쓸 수 있습니다.",
-         0.6, 1.6, 12, 0.5, size=18, bold=True, color=NAVY)
+         "한 가지만 기억하세요 — 설치는 반드시 Claude Code Desktop 에서",
+         0.6, 1.6, 12, 0.5, size=17, bold=True, color=NAVY)
 
 products = [
-    ("Claude Desktop 앱",
-     "권장",
-     "노트북·컴퓨터에\n깔아두고 쓰는 프로그램",
-     ["대화창에서 바로 사용", "설정에서 업로드", "60대에게 가장 쉬움"],
-     GOLD),
-    ("Claude 웹 채팅 (claude.ai)",
-     "지원",
-     "브라우저로 접속해서 쓰는\n웹사이트 버전",
-     ["로그인 후 바로 사용", "Customize → Skills", "Desktop과 동기화"],
-     NAVY),
-    ("Claude Code (개발자용)",
-     "자동",
-     "개발자가 쓰는\n명령어 기반 도구",
-     ["슬래시 명령 자동 인식", "플러그인 명령으로 설치", "기술자 도움 시 편리"],
-     NAVY_LIGHT),
+    {
+        "name": "Claude Code Desktop",
+        "badge": "권장",
+        "desc": "노트북에 깔아서 쓰는\nClaude Code 의 GUI 앱",
+        "features": [
+            "폴더 열고 말로 부탁",
+            "Claude가 자동으로 설치",
+            "60대에게도 가능",
+        ],
+        "note": "code.claude.com 에서 다운로드",
+        "color": GOLD,
+        "fill": YELLOW_HL,
+        "border_w": 3,
+        "is_recommended": True,
+        "is_disabled": False,
+    },
+    {
+        "name": "Claude Code (CLI)",
+        "badge": "전문가용",
+        "desc": "터미널(PowerShell 등)에서\n쓰는 명령어 버전",
+        "features": [
+            "$ claude /plugin ...",
+            "IT 담당이면 가장 빠름",
+            "60대 단독 사용 비추천",
+        ],
+        "note": "이 노트북에 이미 설치됨",
+        "color": NAVY,
+        "fill": WHITE,
+        "border_w": 1.5,
+        "is_recommended": False,
+        "is_disabled": False,
+    },
+    {
+        "name": "일반 클로드 채팅 · Cowork",
+        "badge": "설치 불가",
+        "desc": "claude.ai 웹 대화창 또는\nCowork 샌드박스 모드",
+        "features": [
+            "샌드박스 읽기 전용",
+            "스킬 폴더에 못 씀",
+            "설치 요청 → 실패",
+        ],
+        "note": "쓰지 마세요 (설치는)",
+        "color": GRAY_MID,
+        "fill": GRAY_PALE,
+        "border_w": 1.5,
+        "is_recommended": False,
+        "is_disabled": True,
+    },
 ]
 
 x = 0.6
-for name, badge, desc, features, color in products:
+for p in products:
     # 카드
     card = s.shapes.add_shape(
         MSO_SHAPE.ROUNDED_RECTANGLE,
         Inches(x), Inches(2.3), Inches(4.1), Inches(4.5)
     )
     card.fill.solid()
-    card.fill.fore_color.rgb = WHITE
-    card.line.color.rgb = color
-    card.line.width = Pt(2)
+    card.fill.fore_color.rgb = p["fill"]
+    card.line.color.rgb = p["color"]
+    card.line.width = Pt(p["border_w"])
     card.adjustments[0] = 0.08
 
     # 상단 색 바
     top = s.shapes.add_shape(
         MSO_SHAPE.RECTANGLE,
-        Inches(x), Inches(2.3), Inches(4.1), Inches(0.85)
+        Inches(x), Inches(2.3), Inches(4.1), Inches(0.9)
     )
     top.fill.solid()
-    top.fill.fore_color.rgb = color
+    top.fill.fore_color.rgb = p["color"]
     top.line.fill.background()
 
-    add_text(s, name, x + 0.15, 2.4, 3.8, 0.4,
-             size=16, bold=True, color=WHITE)
+    add_text(s, p["name"], x + 0.15, 2.4, 3.8, 0.4,
+             size=15, bold=True, color=WHITE)
 
     # 배지
     badge_shape = s.shapes.add_shape(
         MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(x + 0.15), Inches(2.75), Inches(0.9), Inches(0.3)
+        Inches(x + 0.15), Inches(2.78), Inches(1.3), Inches(0.32)
     )
     badge_shape.fill.solid()
-    badge_shape.fill.fore_color.rgb = WHITE
+    badge_shape.fill.fore_color.rgb = RED if p["is_recommended"] else WHITE
     badge_shape.line.fill.background()
     badge_shape.adjustments[0] = 0.5
-    add_text(s, badge, x + 0.15, 2.79, 0.9, 0.25,
-             size=10, bold=True, color=color, align=PP_ALIGN.CENTER)
+    add_text(s, p["badge"], x + 0.15, 2.82, 1.3, 0.28,
+             size=11, bold=True,
+             color=WHITE if p["is_recommended"] else p["color"],
+             align=PP_ALIGN.CENTER)
 
     # 설명
-    add_text(s, desc, x + 0.2, 3.35, 3.7, 0.8,
-             size=12, color=GRAY_DARK, line_spacing=1.3)
+    desc_color = GRAY_MID if p["is_disabled"] else GRAY_DARK
+    add_text(s, p["desc"], x + 0.2, 3.4, 3.7, 0.8,
+             size=12, color=desc_color, line_spacing=1.3)
 
-    # 특징 체크리스트
-    y2 = 4.3
-    for f in features:
-        add_text(s, f"✓  {f}", x + 0.2, y2, 3.7, 0.4,
-                 size=11, color=GRAY_MID)
+    # 특징 (체크 또는 ✕)
+    y2 = 4.35
+    mark = "✕" if p["is_disabled"] else "✓"
+    feat_color = GRAY_MID if p["is_disabled"] else GRAY_DARK
+    for f in p["features"]:
+        add_text(s, f"{mark}  {f}", x + 0.2, y2, 3.7, 0.4,
+                 size=11, color=feat_color)
         y2 += 0.4
 
-    # 이 PC 표시 — Claude Code 카드에
-    if name == "Claude Code (개발자용)":
-        note = s.shapes.add_shape(
-            MSO_SHAPE.ROUNDED_RECTANGLE,
-            Inches(x + 0.2), Inches(6.2), Inches(3.7), Inches(0.45)
-        )
-        note.fill.solid()
-        note.fill.fore_color.rgb = YELLOW_HL
-        note.line.color.rgb = GOLD
-        note.line.width = Pt(1)
-        note.adjustments[0] = 0.4
-        add_text(s, "지금 이 노트북에 이미 설치됨", x + 0.25, 6.28, 3.6, 0.3,
-                 size=11, bold=True, color=RED, align=PP_ALIGN.CENTER)
+    # 하단 노트
+    note_fill = RED if p["is_disabled"] else (GOLD if p["is_recommended"] else NAVY)
+    note_bar = s.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(x + 0.2), Inches(6.25), Inches(3.7), Inches(0.4)
+    )
+    note_bar.fill.solid()
+    note_bar.fill.fore_color.rgb = note_fill
+    note_bar.line.fill.background()
+    note_bar.adjustments[0] = 0.5
+    add_text(s, p["note"], x + 0.2, 6.32, 3.7, 0.28,
+             size=11, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
 
     x += 4.3
 
@@ -1527,63 +1603,99 @@ add_footer(s, 24)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 25 — Claude에게 설치 부탁하기
+# Slide 25 — Claude Code Desktop 설치 5단계
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "Claude에게 부탁하시면 됩니다",
-              "링크 하나 주고 \"깔아줘\" 한마디")
+add_title_bar(s, "Claude Code Desktop 설치 · 5단계",
+              "폴더 선택 단계가 중요합니다 — 놓치면 설치가 안 됩니다")
 
-add_text(s, "가장 쉬운 방법",
-         0.6, 1.55, 12, 0.4, size=20, bold=True, color=NAVY)
-
-# 큰 말풍선
-bubble = s.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE,
-    Inches(1.5), Inches(2.2), Inches(10.3), Inches(1.8)
-)
-bubble.fill.solid()
-bubble.fill.fore_color.rgb = YELLOW_HL
-bubble.line.color.rgb = GOLD
-bubble.line.width = Pt(2.5)
-bubble.adjustments[0] = 0.1
-
-add_text(s, "💬  Claude 대화창에 이렇게 적어주세요",
-         1.7, 2.33, 10, 0.35, size=12, color=GRAY_MID)
-add_text(s,
-         "\"ironyjk/police-frameworks 플러그인을 저한테 설치해 주세요.\n"
-         "경찰 프레임워크 12개가 들어있는 마켓플레이스입니다.\"",
-         1.7, 2.7, 10, 1.1, size=17, bold=True, color=GRAY_DARK,
-         align=PP_ALIGN.CENTER, line_spacing=1.45)
-
-# 그 다음 설명
-add_text(s, "그럼 Claude가 알아서",
-         0.6, 4.3, 12, 0.4, size=16, bold=True, color=NAVY)
-
-outcomes = [
-    ("Claude Desktop 에서",
-     "Claude가 Settings → Capabilities → Plugins 에서\n마켓플레이스를 추가하고 설치하는 방법을 화면 그대로 안내해 드립니다."),
-    ("Claude 웹 채팅에서",
-     "Customize → Skills 경로로 동일한 설치 절차를 안내합니다."),
-    ("Claude Code (개발자용)에서",
-     "`/plugin marketplace add ironyjk/police-frameworks` 명령어를\n자동 실행해 12개 공구를 바로 등록합니다."),
+install_steps = [
+    {
+        "num": "1",
+        "title": "Claude Code Desktop 다운로드",
+        "desc": "code.claude.com 접속 → 운영체제에 맞는 설치 파일 내려받기",
+        "note": "윈도우·맥 모두 지원",
+        "who": "혼자",
+    },
+    {
+        "num": "2",
+        "title": "앱 설치 후 실행 · 로그인",
+        "desc": "일반 프로그램처럼 더블클릭해 설치. 앱 열고 Claude 계정으로 로그인.",
+        "note": "Max 또는 Pro 구독 필요",
+        "who": "혼자",
+    },
+    {
+        "num": "3",
+        "title": "폴더 선택 (★ 중요!)",
+        "desc": "앱이 처음 열리면 \"Open Folder\" 또는 \"폴더 열기\" 버튼이 보입니다. "
+                "내 문서 폴더(Documents)나 비어있는 폴더 아무거나 선택하세요.",
+        "note": "이 단계를 놓치면 Claude가 아무것도 못 합니다",
+        "who": "혼자",
+    },
+    {
+        "num": "4",
+        "title": "채팅창에 설치 요청 붙여넣기",
+        "desc": "하단 채팅창에 다음 한 줄을 복사해서 붙여넣고 엔터:\n"
+                "\"ironyjk/police-frameworks 플러그인을 저한테 설치해 주세요.\"",
+        "note": "슬래시 명령어 몰라도 됩니다",
+        "who": "혼자",
+    },
+    {
+        "num": "5",
+        "title": "Claude이 자동 설치 → 새 대화창 열기",
+        "desc": "Claude가 /plugin marketplace add + /plugin install 을 자동 실행. "
+                "설치가 끝나면 새 대화창을 하나 열어 \"peel 로 민원 분석해줘\" 로 사용.",
+        "note": "설치는 한 번만, 사용은 계속",
+        "who": "혼자",
+    },
 ]
 
-y = 4.8
-for title, desc in outcomes:
-    icon = s.shapes.add_shape(
-        MSO_SHAPE.OVAL, Inches(0.75), Inches(y + 0.08), Inches(0.4), Inches(0.4)
+y = 1.5
+for step in install_steps:
+    is_critical = step["num"] == "3"
+    color = RED if is_critical else NAVY
+    fill = YELLOW_HL if is_critical else WHITE
+
+    # 번호 원
+    circle = s.shapes.add_shape(
+        MSO_SHAPE.OVAL, Inches(0.55), Inches(y + 0.1), Inches(0.85), Inches(0.85)
     )
-    icon.fill.solid()
-    icon.fill.fore_color.rgb = GREEN
-    icon.line.fill.background()
-    add_text(s, "✓", 0.75, y + 0.1, 0.4, 0.35,
-             size=14, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
-    add_text(s, title, 1.3, y + 0.08, 4, 0.4,
-             size=13, bold=True, color=NAVY)
-    add_text(s, desc, 5.4, y + 0.05, 7.5, 0.7,
+    circle.fill.solid()
+    circle.fill.fore_color.rgb = color
+    circle.line.fill.background()
+    add_text(s, step["num"], 0.55, y + 0.22, 0.85, 0.65,
+             size=26, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+
+    # 내용 박스
+    box = s.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(1.55), Inches(y), Inches(9.55), Inches(1.05)
+    )
+    box.fill.solid()
+    box.fill.fore_color.rgb = fill
+    box.line.color.rgb = color
+    box.line.width = Pt(2.5 if is_critical else 1.2)
+    box.adjustments[0] = 0.15
+
+    add_text(s, step["title"], 1.75, y + 0.08, 9.2, 0.4,
+             size=15, bold=True, color=color)
+    add_text(s, step["desc"], 1.75, y + 0.42, 9.2, 0.6,
              size=11, color=GRAY_DARK, line_spacing=1.3)
-    y += 0.72
+
+    # 우측 노트 태그
+    note_box = s.shapes.add_shape(
+        MSO_SHAPE.ROUNDED_RECTANGLE,
+        Inches(11.25), Inches(y + 0.3), Inches(1.95), Inches(0.45)
+    )
+    note_box.fill.solid()
+    note_box.fill.fore_color.rgb = color
+    note_box.line.fill.background()
+    note_box.adjustments[0] = 0.3
+    add_text(s, step["note"], 11.25, y + 0.39, 1.95, 0.3,
+             size=9, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+
+    y += 1.17
 
 add_footer(s, 25)
 
