@@ -2,7 +2,7 @@
 
 > A meta-router and collection of 12 evidence-based policing frameworks for Claude Code.
 
-**Created by 최희철 (Choi Hee-cheol)** — software engineer, member of the **경주경찰서 경찰발전협의회 (Gyeongju Police Station Police Development Council — a volunteer support organization)**. Built as a **reference resource for frontline Korean police officers**, not as an operational tool for the council itself. The council is a community support body; crime analysis and enforcement are the work of police officers.
+**Created by 최희철 (Choi Hee Chul)** — software engineer, member of the **경주경찰서 경찰발전협의회 (Gyeongju Police Station Police Development Council — a volunteer support organization)**. Built as a **reference resource for frontline Korean police officers**, not as an operational tool for the council itself. The council is a community support body; crime analysis and enforcement are the work of police officers.
 
 **Police Frameworks** is to policing what [/think](https://github.com/) is to business strategy and [/howtotalk](https://github.com/) is to communication — an intelligence layer that helps police officers and supervisors select the right analytical tool for the situation.
 

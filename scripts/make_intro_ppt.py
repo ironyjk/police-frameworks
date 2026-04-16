@@ -1,20 +1,20 @@
 """
 Police Frameworks — 소개 슬라이드 생성기 (60대 경찰관 대상)
 
-구조 (22장):
-    1    표지
-    2    차례
-    3-12 사례 5건 × 2장 (상황 / /peel 출력)
-    13   공구함 비유
-    14   12개 공구 4서랍
-    15   서랍 1 상세 (문제 패턴)
-    16   서랍 2·3 상세 (조사·위기)
-    17   서랍 4 상세 (정당성)
-    18   /peel 안내데스크 비유
-    19   설치 준비
-    20   설치 단계 (GitHub 다운로드 포함)
-    21   첫 대화 예시
-    22   부탁과 연락처
+구조 (27장):
+    1        표지
+    2        차례
+    3-17     사례 5건 × 3장 (상황 / 분석 / 실행 방안)
+    18       공구함 비유
+    19       12개 공구 4서랍
+    20       서랍 1 상세
+    21       서랍 2·3 상세
+    22       서랍 4 상세
+    23       /peel 안내데스크
+    24       Claude Skills 어디에 깔리나
+    25       Claude에게 설치 부탁하기
+    26       첫 대화 예시
+    27       부탁과 연락처
 
 작성자: 최희철 (경주경찰서 경찰발전협의회 회원, 소프트웨어 개발자)
 """
@@ -44,11 +44,9 @@ GRAY_PALE = RGBColor(0xF1, 0xF5, 0xF9)
 BG = RGBColor(0xFA, 0xFC, 0xFF)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 YELLOW_HL = RGBColor(0xFE, 0xF3, 0xC7)
-GREEN_HL = RGBColor(0xE8, 0xF5, 0xE9)
-RED_HL = RGBColor(0xFE, 0xE2, 0xE2)
 
 FONT = "맑은 고딕"
-TOTAL_SLIDES = 22
+TOTAL_SLIDES = 27
 
 HERE = Path(__file__).resolve().parent
 IMG = HERE.parent / "docs" / "images"
@@ -121,7 +119,7 @@ def add_title_bar(slide, title, subtitle=None):
 
 def add_text(slide, text, left, top, width, height,
              size=18, bold=False, color=GRAY_DARK, align=PP_ALIGN.LEFT,
-             line_spacing=1.25):
+             line_spacing=1.25, italic=False):
     tb = slide.shapes.add_textbox(
         Inches(left), Inches(top), Inches(width), Inches(height)
     )
@@ -139,11 +137,13 @@ def add_text(slide, text, left, top, width, height,
             run.font.name = FONT
             run.font.size = Pt(size)
             run.font.bold = bold
+            run.font.italic = italic
             run.font.color.rgb = color
         if not p.runs:
             p.font.name = FONT
             p.font.size = Pt(size)
             p.font.bold = bold
+            p.font.italic = italic
             p.font.color.rgb = color
     return tb
 
@@ -217,10 +217,13 @@ def add_highlight_box(slide, text, left, top, width, height, fill=YELLOW_HL,
 
 
 # ──────────────────────────────────────────────────────────────
-# 사례 데이터 (5건)
+# 사례 데이터 (5건, 각 3장)
 # ──────────────────────────────────────────────────────────────
 
 CASES = [
+    # ═══════════════════════════════════════════════════════════
+    # 사례 1 · 성건동 공원 청소년
+    # ═══════════════════════════════════════════════════════════
     {
         "num": 1,
         "title": "성건동 공원",
@@ -239,36 +242,103 @@ CASES = [
         ),
         "hook": (
             "단속만으로는 옆 동네 공원으로 옮겨갈 뿐.\n"
-            "/peel 은 \"단속이 아닌 7개 공구 동시 투입\"을 권합니다."
+            "다음 장에서 /peel 이 이 민원을 어떻게 쪼개는지 보여드립니다."
         ),
         "selected": [
             ("SARA", "4단계 진단 사이클"),
             ("Crime Triangle", "6박스 원인 분해"),
-            ("Hot Spots", "시간·공간 집중 확인"),
-            ("CPTED", "조명·조경·시야 개선"),
-            ("COP", "학교·청소년센터·공원녹지과 연계"),
-            ("Procedural Justice", "청소년·주민 존엄 유지"),
+            ("Hot Spots", "시간·공간 집중"),
+            ("CPTED", "조명·조경·시야"),
+            ("COP", "학교·센터·공원녹지과"),
+            ("Procedural Justice", "청소년·주민 존엄"),
             ("Broken Windows 비판", "\"무관용\" 함정 필터"),
         ],
         "excluded": [
-            ("PEACE·Cognitive", "조사 단계가 아님"),
+            ("PEACE·Cognitive", "조사 단계 아님"),
             ("BCSM·ICAT", "현장 위기 아님"),
             ("ILP", "단일 지점 전술 문제"),
         ],
         "pipeline": [
             "Scanning\n14건 지도화",
             "Analysis\n6박스 분해",
-            "BW 필터\n단속 함정 차단",
+            "BW 필터\n단속 함정",
             "Response\nCPTED+COP",
             "PJ 삽입\n청소년 존엄",
             "Assessment\n3개월 재측정",
         ],
-        "actions": [
-            "경주시 공원녹지과에 조명·조경 개선 요청 공문 (1주 내)",
-            "인근 중·고교, 청소년상담복지센터와 주간 연계 회의",
-            "주민 설명회 — 4요소 언어로 \"단속만 안 하는 이유\" 공유",
+        "c_subtitle": "7개 공구가 실제로 어떻게 움직이나",
+        "c_actions": [
+            {
+                "title": "진단 TF — 어디가 진짜 문제인가",
+                "frameworks": ["SARA", "Crime Triangle", "Hot Spots"],
+                "owner": "성건파출소 + 경주서 범죄예방진단팀",
+                "deadline": "1주",
+                "steps": [
+                    "KICS로 최근 3개월 ○○근린공원 반경 112 신고 전수 추출",
+                    "신고 14건을 지도에 점찍어 북측 놀이터·정자 집중 확인",
+                    "Crime Triangle 6박스 워크시트로 Handler·Place·Manager 개입점 특정",
+                ],
+            },
+            {
+                "title": "CPTED 환경 개입 — 조명과 시야부터",
+                "frameworks": ["CPTED"],
+                "owner": "경주서 생활안전과 + 경주시 공원녹지과",
+                "deadline": "1개월",
+                "steps": [
+                    "공원 야간 합동 점검 (조명 밝기·사각지대·정자 음영)",
+                    "조명 LED 교체 예산 요청 공문 발송",
+                    "조경 가지치기·CCTV 각도 조정",
+                ],
+            },
+            {
+                "title": "COP 파트너십 — 학교·센터·편의점",
+                "frameworks": ["COP"],
+                "owner": "성건파출소장 + 여성청소년과",
+                "deadline": "2주",
+                "steps": [
+                    "인근 중·고교 생활지도부 연락망 구축",
+                    "경주시 청소년상담복지센터 대안 활동 연계",
+                    "주변 편의점주 3곳 방문, 청소년 주류 판매 점검",
+                ],
+            },
+            {
+                "title": "주민·청소년 대응 — 4요소 언어",
+                "frameworks": ["Procedural Justice"],
+                "owner": "성건파출소장",
+                "deadline": "2주",
+                "steps": [
+                    "Voice·Neutrality·Respect·Trust 스크립트 마련",
+                    "주민 설명회 개최 (단속 요구 주민 포함)",
+                    "청소년 발견 시 개별 대화 프로토콜 전 경찰관 공유",
+                ],
+            },
+            {
+                "title": "\"무관용 단속\" 요구 필터",
+                "frameworks": ["Broken Windows 비판"],
+                "owner": "지구대장",
+                "deadline": "즉시",
+                "steps": [
+                    "Zero Tolerance의 함정·낙인 효과 논리 정리",
+                    "주민 설명회에서 \"왜 단속만으로 안 되는지\" 발표",
+                    "경찰관 전원에게 낙인 방지 원칙 전달",
+                ],
+            },
+            {
+                "title": "3개월 후 재측정",
+                "frameworks": ["SARA Assessment"],
+                "owner": "경주서 생활안전계",
+                "deadline": "3개월 후",
+                "steps": [
+                    "○○공원 야간 민원 건수 재측정",
+                    "인근 지역 범죄 이동 확인",
+                    "주민 간이 설문으로 체감 안전 측정",
+                ],
+            },
         ],
     },
+    # ═══════════════════════════════════════════════════════════
+    # 사례 2 · 황리단길 야간
+    # ═══════════════════════════════════════════════════════════
     {
         "num": 2,
         "title": "황리단길 야간",
@@ -286,21 +356,21 @@ CASES = [
             "상인은 영업을, 주민은 수면을 요구합니다."
         ),
         "hook": (
-            "공간은 좁고 인력은 한정. /peel 은 \"전 관할 순찰\" 대신\n"
-            "시간·지점을 좁히고 상인·주민이 함께 움직이는 구조를 권합니다."
+            "공간은 좁고 인력은 한정.\n"
+            "다음 장에서 /peel 이 어떻게 \"시간·지점·파트너\"로 쪼개는지 보여드립니다."
         ),
         "selected": [
-            ("Hot Spots", "22~02시 × 특정 블록 집중"),
-            ("ILP", "데이터로 우선순위 설정"),
-            ("COP", "상인협·주민자치위 파트너십"),
-            ("Procedural Justice", "상인·주민·관광객 4요소 준수"),
-            ("Broken Windows 비판", "\"엄격 단속\" 요구 검토"),
+            ("Hot Spots", "22~02시 × 특정 블록"),
+            ("ILP", "데이터로 우선순위"),
+            ("COP", "상인협·주민자치위"),
+            ("Procedural Justice", "4요소 접촉 훈련"),
+            ("Broken Windows 비판", "\"엄격 단속\" 검토"),
         ],
         "excluded": [
             ("PEACE·Cognitive", "조사 면담 단계 아님"),
             ("BCSM·ICAT", "현장 위기 아님"),
-            ("CPTED", "관광지 설계 변경은 주 해법 아님"),
-            ("SARA 독자", "Hot Spots가 우선"),
+            ("CPTED", "관광지 설계 변경 아님"),
+            ("SARA 독자", "Hot Spots 우선"),
         ],
         "pipeline": [
             "112 분석\n시간·지점",
@@ -309,12 +379,79 @@ CASES = [
             "PJ 4요소\n접촉 훈련",
             "분기 평가\n체감·신고",
         ],
-        "actions": [
-            "황남파출소 + 생활안전계: 최근 6개월 야간 신고 유형 분포 분석",
-            "상인협의회·주민자치위 첫 간담회 (관광객 관련 문제 공동 의제)",
-            "관광 성수기 주말 전용 시간대 집중 순찰 15분 사이클 배치",
+        "c_subtitle": "좁은 공간·한정 인력을 어떻게 쓰는가",
+        "c_actions": [
+            {
+                "title": "Hot Spots + ILP 데이터 분석",
+                "frameworks": ["Hot Spots", "ILP"],
+                "owner": "황남파출소 + 경주서 범죄예방진단팀",
+                "deadline": "2주",
+                "steps": [
+                    "최근 6개월 주말 야간(22~02시) 112 신고 유형별 분포",
+                    "핫스팟 블록 상위 3곳 선정",
+                    "Koper 15분 규칙 기반 순찰 배치 계획 수립",
+                ],
+            },
+            {
+                "title": "COP 상인·주민 협의체",
+                "frameworks": ["COP"],
+                "owner": "황남파출소장",
+                "deadline": "1개월",
+                "steps": [
+                    "상인협의회 + 주민자치위 첫 합동 간담회 주재",
+                    "공동 이슈 목록 수렴 (주취·주차·소음)",
+                    "월 1회 정기 회의 체계 합의",
+                ],
+            },
+            {
+                "title": "Procedural Justice 접촉 훈련",
+                "frameworks": ["Procedural Justice"],
+                "owner": "황남파출소 + 교육 담당",
+                "deadline": "3주",
+                "steps": [
+                    "관광객·상인·주민별 접촉 스크립트 마련 (4요소 삽입)",
+                    "지구대 전원 롤플레이 훈련",
+                    "피드백 수렴 체계 구축",
+                ],
+            },
+            {
+                "title": "\"엄격 단속\" 요구 필터",
+                "frameworks": ["Broken Windows 비판"],
+                "owner": "지구대장",
+                "deadline": "즉시",
+                "steps": [
+                    "관광지 Zero Tolerance 실패 사례 공유",
+                    "상인 대립·주민 대립 완화 메시지 정리",
+                    "대안(협의체·핫스팟·PJ)을 \"단속 강화\"보다 앞에 제시",
+                ],
+            },
+            {
+                "title": "관광 성수기 특별 운영",
+                "frameworks": ["Hot Spots", "COP"],
+                "owner": "경주서 생활안전계",
+                "deadline": "성수기 2주 전",
+                "steps": [
+                    "봄·가을 성수기 주말 전용 인력 편성",
+                    "자원봉사·지역경찰 혼합 운영",
+                    "경주시 관광과와 공동 대응 매뉴얼",
+                ],
+            },
+            {
+                "title": "분기별 평가",
+                "frameworks": ["SARA Assessment"],
+                "owner": "경주서 생활안전계",
+                "deadline": "분기",
+                "steps": [
+                    "민원 건수·상인 만족도·주민 체감 측정",
+                    "인근 지역 범죄 이동 확인",
+                    "차기 분기 우선순위 조정",
+                ],
+            },
         ],
     },
+    # ═══════════════════════════════════════════════════════════
+    # 사례 3 · 외동산단 새벽 절도
+    # ═══════════════════════════════════════════════════════════
     {
         "num": 3,
         "title": "외동산단 새벽 절도",
@@ -328,23 +465,24 @@ CASES = [
             "지금까지 대응: 순찰 강화.\n"
             "결과: 순찰 빠지면 다시 발생.\n\n"
             "외동파출소 새벽 인력은 한계.\n"
-            "단지 관리공단은 방범이 주 업무가 아닙니다."
+            "단지 관리공단은 방범이 주 업무가 아닙니다.\n"
+            "입주기업은 각자 보안을 각자 책임집니다."
         ),
         "hook": (
             "Sherman·Weisburd 연구: 핫스팟 15분 체류만으로 효과 급증.\n"
-            "다만 지속 효과를 위해선 CPTED 환경 개입이 더 쌉니다."
+            "다음 장: /peel 이 순찰 강화 대신 CPTED를 왜 먼저 권하는지."
         ),
         "selected": [
             ("SARA", "문제 구조화"),
-            ("Crime Triangle", "가해자·대상·장소 분해"),
+            ("Crime Triangle", "가해자·대상·장소"),
             ("Hot Spots", "구역 집중 확인"),
-            ("CPTED", "조명·CCTV·차단기·시야"),
-            ("COP", "단지 관리공단·입주기업 협력"),
+            ("CPTED", "조명·CCTV·차단기"),
+            ("COP", "관리공단·입주기업"),
         ],
         "excluded": [
-            ("PEACE·Cognitive", "조사 면담 단계 아님"),
+            ("PEACE·Cognitive", "조사 단계 아님"),
             ("BCSM·ICAT", "현장 위기 아님"),
-            ("Procedural Justice", "주 개입 아님 (단, 기본 전제)"),
+            ("Procedural Justice", "주 개입 아님 (전제)"),
             ("Broken Windows", "무질서 프레임 부적절"),
         ],
         "pipeline": [
@@ -355,12 +493,79 @@ CASES = [
             "관리공단\n책임 분담",
             "3개월\n재측정",
         ],
-        "actions": [
-            "단지 관리공단에 CPTED 점검 요청 공문 (조명 수명·사각지대·차단기 작동)",
-            "입주기업 방범 담당자 연락망 구축 — 월 1회 브리핑",
-            "조명 교체·CCTV 각도 조정 예산은 관리공단·지자체 협력으로 확보",
+        "c_subtitle": "순찰이 아닌 환경·파트너로 푸는 법",
+        "c_actions": [
+            {
+                "title": "SARA + Crime Triangle 진단",
+                "frameworks": ["SARA", "Crime Triangle"],
+                "owner": "외동파출소 + 경주서 범죄예방진단팀",
+                "deadline": "1주",
+                "steps": [
+                    "12건 신고 시공간 분포·수법·피해 품목 집계",
+                    "6박스 분해로 Place·Manager 개입점 도출",
+                    "공통 피해 패턴(차종·보관물·시간대) 문서화",
+                ],
+            },
+            {
+                "title": "Hot Spots 순찰 재설계",
+                "frameworks": ["Hot Spots"],
+                "owner": "외동파출소",
+                "deadline": "2주",
+                "steps": [
+                    "상위 5% 핫스팟 구역 특정",
+                    "새벽 시간대 Koper 15분 집중 순찰",
+                    "순찰 로그 정기 공유 (주간 단위)",
+                ],
+            },
+            {
+                "title": "CPTED 합동 현장 점검",
+                "frameworks": ["CPTED"],
+                "owner": "경주서 + 단지 관리공단",
+                "deadline": "1개월",
+                "steps": [
+                    "주차장 조명 수명·밝기 점검 (20m 얼굴 식별 기준)",
+                    "CCTV 각도·사각지대 매핑",
+                    "차단기·출입 통제 작동 확인, 개선 우선순위 작성",
+                ],
+            },
+            {
+                "title": "COP 관리공단·기업 협력",
+                "frameworks": ["COP"],
+                "owner": "외동파출소장",
+                "deadline": "2주",
+                "steps": [
+                    "단지 관리공단과 방범 MOU 추진",
+                    "입주기업 방범 담당자 연락망 구축",
+                    "월 1회 브리핑 체계 (사건 공유·예방 팁)",
+                ],
+            },
+            {
+                "title": "환경 개선 예산 확보",
+                "frameworks": ["CPTED", "COP"],
+                "owner": "경주서 생활안전과",
+                "deadline": "2개월",
+                "steps": [
+                    "조명·CCTV 개선 견적 3곳 확보",
+                    "관리공단·경주시·경북경찰청 예산 협의",
+                    "시공 일정 확정 및 공유",
+                ],
+            },
+            {
+                "title": "3개월 재측정",
+                "frameworks": ["SARA Assessment"],
+                "owner": "경주서 생활안전계",
+                "deadline": "3개월 후",
+                "steps": [
+                    "신고 건수·피해액 재측정",
+                    "인접 단지 범죄 이동 확인",
+                    "SARA 사이클 재시작 여부 결정",
+                ],
+            },
         ],
     },
+    # ═══════════════════════════════════════════════════════════
+    # 사례 4 · 고압 민원
+    # ═══════════════════════════════════════════════════════════
     {
         "num": 4,
         "title": "규정대로 했는데 민원",
@@ -379,11 +584,11 @@ CASES = [
         ),
         "hook": (
             "\"규정대로\"는 정당성 언어가 아닙니다.\n"
-            "/peel 은 4요소 체크리스트로 사건을 해부해 드립니다."
+            "다음 장에서 /peel 이 4요소로 사건을 해부하는 법을 보여드립니다."
         ),
         "selected": [
-            ("Procedural Justice", "4요소로 사건 해부"),
-            ("COP", "지구대장 → 주민 직접 연락"),
+            ("Procedural Justice", "4요소 사건 해부"),
+            ("COP", "지구대장 직접 연락"),
             ("SARA", "재발 방지 구조 분석"),
         ],
         "excluded": [
@@ -401,12 +606,68 @@ CASES = [
             "SARA\n재발 방지",
             "교육\n언어·태도",
         ],
-        "actions": [
-            "지구대장이 민원인에게 직접 연락 — 4요소 언어로 사건 재설명",
-            "감찰·교육과와 공유 — 유사 민원 빈도 확인 및 재교육",
-            "접촉 표준 스크립트 마련 — 발언권·중립성·존중·신뢰 삽입",
+        "c_subtitle": "규정을 지켰어도 신뢰가 깨진 이유를 푼다",
+        "c_actions": [
+            {
+                "title": "4요소로 사건 해부",
+                "frameworks": ["Procedural Justice"],
+                "owner": "감찰 + 생활안전계",
+                "deadline": "1주",
+                "steps": [
+                    "Voice·Neutrality·Respect·Trust 항목별 당일 대응 점검",
+                    "녹화·녹음 재검토, 4요소 중 부족한 지점 특정",
+                    "1페이지 분석 보고서 작성",
+                ],
+            },
+            {
+                "title": "지구대장 주민 직접 연락",
+                "frameworks": ["COP", "Procedural Justice"],
+                "owner": "지구대장",
+                "deadline": "3일 내",
+                "steps": [
+                    "민원인에게 직접 전화 또는 방문",
+                    "4요소 언어로 사건을 다시 설명",
+                    "필요 시 사과, 후속 조치 약속",
+                ],
+            },
+            {
+                "title": "유사 민원 빈도 확인",
+                "frameworks": ["SARA", "ILP"],
+                "owner": "감찰",
+                "deadline": "2주",
+                "steps": [
+                    "지난 1년 유사 유형 민원 건수 집계",
+                    "특정 시간대·경찰관 편중 여부 확인",
+                    "패턴이면 구조적 원인 진단",
+                ],
+            },
+            {
+                "title": "접촉 표준 스크립트 개선",
+                "frameworks": ["Procedural Justice"],
+                "owner": "경주서 교육과",
+                "deadline": "3주",
+                "steps": [
+                    "주취자 처리 표준 스크립트 재작성 (4요소 삽입)",
+                    "지구대 롤플레이 훈련",
+                    "분기 평가 포함",
+                ],
+            },
+            {
+                "title": "재발 방지 교육",
+                "frameworks": ["Procedural Justice", "COP"],
+                "owner": "경주서 교육과",
+                "deadline": "1개월",
+                "steps": [
+                    "Procedural Justice 기본 교육 실시",
+                    "본 사건 포함 사례 중심 워크숍",
+                    "교육 효과 평가 및 기록",
+                ],
+            },
         ],
     },
+    # ═══════════════════════════════════════════════════════════
+    # 사례 5 · 거래처 사칭 사기
+    # ═══════════════════════════════════════════════════════════
     {
         "num": 5,
         "title": "거래처 사칭 사기",
@@ -419,21 +680,21 @@ CASES = [
             "\"공사 건이 급해서 자재를 먼저 사서 보내달라\"\n"
             "피해업체가 결제 후 연락 두절.\n\n"
             "카카오톡 프로필 복제, 이메일 도메인 변조\n"
-            "(예: samsung → samsnug), 발신번호 변작.\n\n"
+            "(samsung → samsnug), 발신번호 변작.\n\n"
             "단일 사건이 아닌 조직·연속·디지털 범죄.\n"
             "물리적 공간이 없어 순찰로 막을 수 없습니다."
         ),
         "hook": (
             "이 범죄는 순찰로 못 잡습니다.\n"
-            "/peel 은 데이터(ILP) + 예방(COP) + 진술 인출(Cognitive) 조합을 권합니다."
+            "다음 장: /peel 이 데이터·예방·진술·면담으로 어떻게 엮는지."
         ),
         "selected": [
-            ("SARA", "문제 정의·분석 구조"),
-            ("ILP", "계좌·전화·IP 패턴 분석"),
-            ("Crime Triangle", "가해자·대상·통로 분해"),
-            ("COP", "조달담당자 교육·조기 경보"),
-            ("Cognitive Interview", "피해자 진술 단서 최대 인출"),
-            ("PEACE", "검거 시 구조적 면담"),
+            ("SARA", "문제 정의 구조"),
+            ("ILP", "계좌·전화·IP 분석"),
+            ("Crime Triangle", "통로 차단 지점"),
+            ("COP", "조달담당자 교육"),
+            ("Cognitive Interview", "진술 단서 인출"),
+            ("PEACE", "검거 시 면담"),
         ],
         "excluded": [
             ("CPTED·Hot Spots", "물리 공간 범죄 아님"),
@@ -445,21 +706,85 @@ CASES = [
             "SARA\n유형 집계",
             "ILP\n계좌·전화\n클러스터링",
             "Triangle\n통로 차단",
-            "COP\n조달교육\nMOU",
+            "COP\n조달 교육",
             "Cognitive\n진술 인출",
             "PEACE\n검거 면담",
         ],
-        "actions": [
-            "생활안전계 + 사이버수사대 합동 TF — 3개월 신고 계좌·전화 통합 (1주)",
-            "상공회의소·산업단지 조달담당자 실전 교육 자료 개발 (3주)",
-            "\"신규 계좌 2인 재확인\" 프로토콜 템플릿 배포 (3주)",
+        "c_subtitle": "데이터 → 예방 → 진술 → 면담의 4박자",
+        "c_actions": [
+            {
+                "title": "SARA + ILP 합동 TF 결성",
+                "frameworks": ["SARA", "ILP"],
+                "owner": "경주서 생활안전계 + 사이버수사대",
+                "deadline": "1주",
+                "steps": [
+                    "최근 3개월 \"거래처 사칭\" 신고 집계 (건수·피해액·업종)",
+                    "동일 계좌·전화번호 연계사건 탐지",
+                    "텍스트 클러스터링 (문구·수법·말투 패턴)",
+                ],
+            },
+            {
+                "title": "Crime Triangle 통로 차단",
+                "frameworks": ["Crime Triangle"],
+                "owner": "경주서 + 본청 사이버수사국",
+                "deadline": "3주",
+                "steps": [
+                    "카카오·통신사 플랫폼 협조 요청 (프로필 복제·발신 변작)",
+                    "금융정보분석원에 대포계좌 동결 요청",
+                    "국제공조 필요 시 검경 연계 조기 가동",
+                ],
+            },
+            {
+                "title": "COP 조달담당자 실전 교육",
+                "frameworks": ["COP"],
+                "owner": "경주서 생활안전·범죄예방과",
+                "deadline": "3주",
+                "steps": [
+                    "상공회의소·산업단지 관리공단과 MOU 체결",
+                    "실제 사칭 캡처 포함 교육 자료 개발",
+                    "\"신규 계좌 입금 전 2인 재확인\" 프로토콜 배포",
+                ],
+            },
+            {
+                "title": "조기 경보 네트워크",
+                "frameworks": ["COP"],
+                "owner": "경주서 생활안전과",
+                "deadline": "1개월",
+                "steps": [
+                    "상공회의소 경보 문자 발송 채널 구축",
+                    "피해 발생 48시간 내 인근 업체 전파 체계",
+                    "자율방범대·지역 밴드·카페 활용",
+                ],
+            },
+            {
+                "title": "Cognitive Interview 진술 체계",
+                "frameworks": ["Cognitive Interview"],
+                "owner": "경주서 수사과 + 교육",
+                "deadline": "1개월",
+                "steps": [
+                    "피해자 조서 양식에 4기법 반영 (문맥·세부·역순·관점)",
+                    "조사관 교육 및 롤플레이",
+                    "사칭범 말투·단어·시간대를 ILP로 피드백",
+                ],
+            },
+            {
+                "title": "PEACE 면담 준비",
+                "frameworks": ["PEACE"],
+                "owner": "경주서 수사과",
+                "deadline": "검거 시",
+                "steps": [
+                    "증거(계좌·통신·진술) 완벽 정리 후 면담",
+                    "Account → Clarification → Challenge 구조 적용",
+                    "조직 전모 확인이 목표 (개인 자백 유도 아님)",
+                ],
+            },
         ],
     },
 ]
 
 
 # ──────────────────────────────────────────────────────────────
-# 사례 슬라이드 빌더 (A: 상황)
+# 사례 A (상황)
 # ──────────────────────────────────────────────────────────────
 
 def make_case_slide_a(prs, case, page_no):
@@ -481,23 +806,22 @@ def make_case_slide_a(prs, case, page_no):
              size=14, color=GRAY_DARK, line_spacing=1.35)
 
     add_highlight_box(s, case["hook"], 0.6, 5.3, 12.1, 1.55, size=15)
-
     add_footer(s, page_no)
     return s
 
 
 # ──────────────────────────────────────────────────────────────
-# 사례 슬라이드 빌더 (B: /peel 출력)
+# 사례 B (/peel 분석 — 선정/제외/파이프라인)
 # ──────────────────────────────────────────────────────────────
 
 def make_case_slide_b(prs, case, page_no):
     s = prs.slides.add_slide(blank)
     set_background(s, BG)
     add_title_bar(s,
-                  f"사례 {case['num']} · /peel 이 내주는 답",
-                  "어떤 공구를 꺼내고 어떤 공구는 뺄지")
+                  f"사례 {case['num']} · /peel 의 분석",
+                  "어떤 공구를 꺼내고, 어떤 공구는 뺄지")
 
-    # ── 왼쪽: 선정 (녹색) ─────────────────────
+    # 선정 (녹색)
     sel_bar = s.shapes.add_shape(
         MSO_SHAPE.RECTANGLE, Inches(0.6), Inches(1.5), Inches(6.05), Inches(0.4)
     )
@@ -515,7 +839,7 @@ def make_case_slide_b(prs, case, page_no):
                  size=11, color=GRAY_MID)
         y += 0.32
 
-    # ── 오른쪽: 제외 (회색) ────────────────────
+    # 제외 (회색)
     ex_bar = s.shapes.add_shape(
         MSO_SHAPE.RECTANGLE, Inches(6.85), Inches(1.5), Inches(6.05), Inches(0.4)
     )
@@ -533,13 +857,12 @@ def make_case_slide_b(prs, case, page_no):
                  size=11, color=GRAY_MID)
         y += 0.32
 
-    # ── 중간: 파이프라인 (가로 플로우) ─────────
+    # 파이프라인
     add_text(s, "→ 이 순서로 진행합니다",
-             0.6, 4.45, 12.1, 0.3, size=13, bold=True, color=NAVY)
+             0.6, 4.55, 12.1, 0.3, size=14, bold=True, color=NAVY)
 
     steps = case["pipeline"]
     n = len(steps)
-    # 박스 하나 폭 계산
     total_w = 12.1
     gap = 0.15
     box_w = (total_w - gap * (n - 1)) / n
@@ -547,54 +870,116 @@ def make_case_slide_b(prs, case, page_no):
     for i, step in enumerate(steps):
         box = s.shapes.add_shape(
             MSO_SHAPE.ROUNDED_RECTANGLE,
-            Inches(x), Inches(4.85), Inches(box_w), Inches(1.0)
+            Inches(x), Inches(4.95), Inches(box_w), Inches(1.1)
         )
         box.fill.solid()
         box.fill.fore_color.rgb = NAVY
         box.line.fill.background()
         box.adjustments[0] = 0.15
-        add_text(s, step, x + 0.05, 4.95, box_w - 0.1, 0.85,
-                 size=10, bold=True, color=WHITE,
+        add_text(s, step, x + 0.05, 5.08, box_w - 0.1, 0.95,
+                 size=11, bold=True, color=WHITE,
                  align=PP_ALIGN.CENTER, line_spacing=1.2)
-        # 화살표 (마지막 제외)
         if i < n - 1:
             arr = s.shapes.add_shape(
                 MSO_SHAPE.RIGHT_ARROW,
-                Inches(x + box_w + 0.01), Inches(5.22), Inches(0.12), Inches(0.25)
+                Inches(x + box_w + 0.015), Inches(5.37), Inches(0.12), Inches(0.25)
             )
             arr.fill.solid()
             arr.fill.fore_color.rgb = GOLD
             arr.line.fill.background()
         x += box_w + gap
 
-    # ── 하단: 즉시 할 수 있는 행동 ─────────────
-    action_box = s.shapes.add_shape(
-        MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(0.6), Inches(6.1), Inches(12.1), Inches(0.95)
+    add_highlight_box(
+        s,
+        "다음 장에서 각 공구가 현장에서 구체적으로 무엇을 하는지 정리해 드립니다.",
+        0.6, 6.3, 12.1, 0.75, size=13
     )
-    action_box.fill.solid()
-    action_box.fill.fore_color.rgb = YELLOW_HL
-    action_box.line.color.rgb = GOLD
-    action_box.line.width = Pt(1.2)
-    action_box.adjustments[0] = 0.15
 
-    add_text(s, "⚡ 바로 할 수 있는 행동",
-             0.85, 6.17, 11.8, 0.3, size=12, bold=True, color=RED)
-    tb = s.shapes.add_textbox(
-        Inches(0.85), Inches(6.43), Inches(11.8), Inches(0.7)
-    )
-    tf = tb.text_frame
-    tf.word_wrap = True
-    tf.margin_left = tf.margin_right = tf.margin_top = tf.margin_bottom = 0
-    for i, action in enumerate(case["actions"]):
-        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.text = f"{i+1}.  " + action
-        p.line_spacing = 1.15
-        p.space_after = Pt(1)
-        for run in p.runs:
-            run.font.name = FONT
-            run.font.size = Pt(11)
-            run.font.color.rgb = GRAY_DARK
+    add_footer(s, page_no)
+    return s
+
+
+# ──────────────────────────────────────────────────────────────
+# 사례 C (실행 방안 상세 — 6개 카드)
+# ──────────────────────────────────────────────────────────────
+
+def make_case_slide_c(prs, case, page_no):
+    s = prs.slides.add_slide(blank)
+    set_background(s, BG)
+    add_title_bar(s,
+                  f"사례 {case['num']} · 구체적인 실행 방안",
+                  case.get("c_subtitle", ""))
+
+    actions = case["c_actions"][:6]
+
+    # 2열 × 3행
+    positions = [
+        (0.4, 1.35), (6.85, 1.35),
+        (0.4, 3.33), (6.85, 3.33),
+        (0.4, 5.31), (6.85, 5.31),
+    ]
+    card_w = 6.05
+    card_h = 1.85
+
+    for i, action in enumerate(actions):
+        if i >= len(positions):
+            break
+        x, y = positions[i]
+
+        # 카드 박스
+        box = s.shapes.add_shape(
+            MSO_SHAPE.ROUNDED_RECTANGLE,
+            Inches(x), Inches(y), Inches(card_w), Inches(card_h)
+        )
+        box.fill.solid()
+        box.fill.fore_color.rgb = WHITE
+        box.line.color.rgb = NAVY
+        box.line.width = Pt(1.3)
+        box.adjustments[0] = 0.1
+
+        # 좌측 번호 스트립
+        strip = s.shapes.add_shape(
+            MSO_SHAPE.RECTANGLE,
+            Inches(x), Inches(y), Inches(0.5), Inches(card_h)
+        )
+        strip.fill.solid()
+        strip.fill.fore_color.rgb = NAVY
+        strip.line.fill.background()
+        add_text(s, str(i + 1), x, y + 0.55, 0.5, 0.6,
+                 size=26, bold=True, color=GOLD, align=PP_ALIGN.CENTER)
+
+        # 제목
+        add_text(s, action["title"], x + 0.6, y + 0.1, card_w - 0.75, 0.35,
+                 size=13, bold=True, color=NAVY)
+
+        # 프레임워크 태그
+        fw_text = "  ·  ".join(action["frameworks"])
+        add_text(s, fw_text, x + 0.6, y + 0.43, card_w - 0.75, 0.25,
+                 size=9, bold=True, color=GOLD, italic=True)
+
+        # 담당 · 기한
+        meta = f"{action['owner']}   |   기한 {action['deadline']}"
+        add_text(s, meta, x + 0.6, y + 0.67, card_w - 0.75, 0.25,
+                 size=9, color=GRAY_MID)
+
+        # 단계 (3개)
+        tb = s.shapes.add_textbox(
+            Inches(x + 0.6), Inches(y + 0.92),
+            Inches(card_w - 0.75), Inches(card_h - 1.0)
+        )
+        tf = tb.text_frame
+        tf.word_wrap = True
+        tf.margin_left = tf.margin_right = 0
+        tf.margin_top = tf.margin_bottom = 0
+        for j, step in enumerate(action["steps"][:3]):
+            p = tf.paragraphs[0] if j == 0 else tf.add_paragraph()
+            p.text = "•  " + step
+            p.line_spacing = 1.2
+            p.space_after = Pt(0)
+            for run in p.runs:
+                run.font.name = FONT
+                run.font.size = Pt(9)
+                run.font.color.rgb = GRAY_DARK
 
     add_footer(s, page_no)
     return s
@@ -662,9 +1047,9 @@ add_text(s,
          0.6, 2.15, 12, 1.2, size=15, color=GRAY_MID)
 
 stages = [
-    ("1", "사례 5가지", "경주 현장에서 바로\n있을 만한 이야기\n(각 사례 2장씩)", RED),
-    ("2", "이론은 간단히", "12개 '공구'가 뭔지\n한눈에 보여드립니다\n(5장)", NAVY),
-    ("3", "설치는 천천히", "노트북에 어떻게 올리는지\n단계별로\n(4장)", GOLD),
+    ("1", "사례 5가지", "경주 현장에서 바로\n있을 만한 이야기\n(사례당 3장씩)", RED),
+    ("2", "이론은 간단히", "12개 '공구'가 뭔지\n한눈에 보여드립니다\n(6장)", NAVY),
+    ("3", "설치는 천천히", "Claude에게 링크 주고\n\"깔아줘\" 한마디\n(3장)", GOLD),
 ]
 x = 0.6
 for num, title, desc, color in stages:
@@ -695,17 +1080,18 @@ add_footer(s, 2)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 3-12 — 사례 5건 × 2장
+# Slides 3-17 — 사례 5건 × 3장
 # ══════════════════════════════════════════════════════════════
 page = 3
 for case in CASES:
     make_case_slide_a(prs, case, page)
     make_case_slide_b(prs, case, page + 1)
-    page += 2
+    make_case_slide_c(prs, case, page + 2)
+    page += 3
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 13 — 이게 뭔데요? (공구함 비유)
+# Slide 18 — 공구함 비유
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
@@ -728,11 +1114,11 @@ body = (
 add_text(s, body, 0.6, 2.3, 6.2, 4.7,
          size=15, color=GRAY_DARK, line_spacing=1.4)
 
-add_footer(s, 13)
+add_footer(s, 18)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 14 — 12개 공구 4개 서랍 (OVERFLOW FIX)
+# Slide 19 — 12개 공구 4개 서랍
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
@@ -757,15 +1143,13 @@ drawers = [
      GOLD),
 ]
 
-# 공간 계산
-CHIP_AREA_X = 4.7        # chips 시작
-CHIP_AREA_END = 12.95    # chips 끝
-CHIP_AREA_W = CHIP_AREA_END - CHIP_AREA_X  # 8.25
+CHIP_AREA_X = 4.7
+CHIP_AREA_END = 12.95
+CHIP_AREA_W = CHIP_AREA_END - CHIP_AREA_X
 CHIP_GAP = 0.12
 
 y = 1.55
 for title, tools, desc, color in drawers:
-    # 서랍 제목 바
     bar = s.shapes.add_shape(
         MSO_SHAPE.RECTANGLE, Inches(0.6), Inches(y), Inches(4.0), Inches(1.3)
     )
@@ -777,11 +1161,9 @@ for title, tools, desc, color in drawers:
     add_text(s, desc, 0.75, y + 0.74, 3.8, 0.5,
              size=11, color=GRAY_LIGHT)
 
-    # 공구 chips — 개수에 따라 폭 동적 계산
     n = len(tools)
     chip_w = (CHIP_AREA_W - CHIP_GAP * (n - 1)) / n
     tx = CHIP_AREA_X
-    # 공구 개수에 따른 폰트
     chip_font = 11 if n >= 5 else (14 if n == 3 else 17)
 
     for t in tools:
@@ -800,11 +1182,11 @@ for title, tools, desc, color in drawers:
 
     y += 1.42
 
-add_footer(s, 14)
+add_footer(s, 19)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 15 — 서랍 1 상세
+# Slide 20 — 서랍 1 상세
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
@@ -847,17 +1229,16 @@ for name, desc in tools:
              size=13, color=GRAY_DARK, line_spacing=1.3)
     y += 1.08
 
-add_footer(s, 15)
+add_footer(s, 20)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 16 — 서랍 2·3 상세
+# Slide 21 — 서랍 2·3 상세
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
 add_title_bar(s, "서랍 2·3 · 조사와 위기", "사람과 마주 앉을 때, 현장이 급할 때")
 
-# 서랍 2
 add_text(s, "서랍 2 — 조사·면담", 0.6, 1.55, 12, 0.4,
          size=17, bold=True, color=NAVY_LIGHT)
 box = s.shapes.add_shape(
@@ -882,7 +1263,6 @@ add_text(s,
          "문맥 복원·모든 세부·역순·관점 전환 4기법. 메타분석 25~85% 더 많은 정확한 정보.",
          0.85, 3.55, 11.8, 0.3, size=12, color=GRAY_MID)
 
-# 서랍 3
 add_text(s, "서랍 3 — 현장 위기", 0.6, 4.15, 12, 0.4,
          size=17, bold=True, color=RED)
 box2 = s.shapes.add_shape(
@@ -906,11 +1286,11 @@ add_text(s,
          "시간·거리·엄폐. 루이빌 실험: 물리력 28% ↓, 시민 부상 26% ↓, 경찰관 부상 36% ↓.",
          0.85, 6.15, 11.8, 0.4, size=12, color=GRAY_MID)
 
-add_footer(s, 16)
+add_footer(s, 21)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 17 — 서랍 4 상세
+# Slide 22 — 서랍 4 상세
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
@@ -979,11 +1359,11 @@ add_text(s,
          "경고 필터 역할을 합니다.",
          7.1, 4.85, 5.5, 1.7, size=13, color=GRAY_DARK, line_spacing=1.3)
 
-add_footer(s, 17)
+add_footer(s, 22)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 18 — /peel 안내데스크
+# Slide 23 — /peel 안내데스크
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
@@ -1000,11 +1380,11 @@ stages = [
     ("1단계", "상황 분류",
      "반복 패턴?\n단일 사건?\n현장 위기?"),
     ("2단계", "공구 고르기",
-     "12개 중 2~4개 조합\n(나머지는 뺌)"),
+     "12개 중 2~6개 조합\n(나머지는 뺌)"),
     ("3단계", "순서 잡기",
      "어느 공구를\n먼저 · 나중에"),
-    ("결과", "체크리스트",
-     "각 단계에서\n물어야 할 질문\n제시"),
+    ("결과", "실행 방안",
+     "담당·기한·단계까지\n구체적으로 제시"),
 ]
 x = 0.6
 for label, title, desc in stages:
@@ -1047,133 +1427,181 @@ add_highlight_box(
     0.6, 6.5, 12.1, 0.9, size=13
 )
 
-add_footer(s, 18)
+add_footer(s, 23)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 19 — 설치 준비물 (Max 추천)
+# Slide 24 — Claude Skills 어디에 깔리나
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "설치 준비물", "노트북 한 대면 됩니다")
+add_title_bar(s, "어디에 깔리나요?", "Claude 3가지 제품 어디서든 똑같이 작동합니다")
 
-add_image(s, IMG / "install_desk.png", 7.3, 1.5, 5.6, 3.4)
-
-add_text(s, "먼저 준비해 두실 것",
-         0.6, 1.55, 7.0, 0.5, size=19, bold=True, color=NAVY)
-add_bullets(s,
-    [
-        "노트북 한 대 (윈도우·맥 모두 됩니다)",
-        "인터넷 연결",
-        "이메일 주소 하나 (구글·카카오 가능)",
-        "월 구독료 — 아래 권장 참조",
-    ],
-    0.8, 2.1, 6.8, 2.4, size=15
-)
-
-# Max 추천 박스
-max_box = s.shapes.add_shape(
-    MSO_SHAPE.ROUNDED_RECTANGLE,
-    Inches(0.6), Inches(4.65), Inches(6.5), Inches(1.4)
-)
-max_box.fill.solid()
-max_box.fill.fore_color.rgb = YELLOW_HL
-max_box.line.color.rgb = GOLD
-max_box.line.width = Pt(2)
-max_box.adjustments[0] = 0.1
-add_text(s, "구독 권장  ·  Claude Max", 0.8, 4.78, 6.1, 0.4,
-         size=14, bold=True, color=RED)
 add_text(s,
-         "Claude Pro (월 ~2.8만 원) 도 Skills 기능이 됩니다.\n"
-         "다만 본격 업무 사용이면 Max (월 ~14만 원) 가 편합니다 — 사용량 5배.",
-         0.8, 5.15, 6.1, 0.85, size=12, color=GRAY_DARK, line_spacing=1.3)
+         "좋은 소식 — 한 번 깔면 세 곳 모두에서 쓸 수 있습니다.",
+         0.6, 1.6, 12, 0.5, size=18, bold=True, color=NAVY)
 
-add_highlight_box(
-    s,
-    "\"컴퓨터 잘 모르는데요?\" — 괜찮습니다.\n"
-    "1~4단계는 혼자, 5~7단계만 가족·직원·IT 담당에게 10분 부탁하시면 됩니다.",
-    0.6, 6.15, 12.1, 0.9, size=14
-)
-
-add_footer(s, 19)
-
-
-# ══════════════════════════════════════════════════════════════
-# Slide 20 — 설치 7단계 (GitHub 다운로드 포함)
-# ══════════════════════════════════════════════════════════════
-s = prs.slides.add_slide(blank)
-set_background(s, BG)
-add_title_bar(s, "설치 7단계  ·  순서대로만 따라오세요",
-              "1~4 혼자 · 5~7 도움받기")
-
-steps = [
-    ("1", "claude.ai 접속 · 회원가입", "이메일 또는 구글 계정", "혼자"),
-    ("2", "Claude Max 구독 (월 약 14만 원)", "Pro도 가능하지만 실전은 Max 권장", "혼자"),
-    ("3", "claude.com/download → Claude Desktop 설치", "일반 프로그램처럼 더블클릭", "혼자"),
-    ("4", "Claude Desktop 로그인", "1단계 계정으로", "혼자"),
-    ("5", "github.com/ironyjk/police-frameworks 접속", "초록색 Code 버튼 → Download ZIP", "도움"),
-    ("6", "Claude Desktop 설정 → Skills → Upload", "zip 그대로 올림 (풀지 마세요)", "도움"),
-    ("7", "새 대화 창에서 peel 호출", "\"peel 로 이 민원 분석해줘\" 로 시작", "도움"),
+products = [
+    ("Claude Desktop 앱",
+     "권장",
+     "노트북·컴퓨터에\n깔아두고 쓰는 프로그램",
+     ["대화창에서 바로 사용", "설정에서 업로드", "60대에게 가장 쉬움"],
+     GOLD),
+    ("Claude 웹 채팅 (claude.ai)",
+     "지원",
+     "브라우저로 접속해서 쓰는\n웹사이트 버전",
+     ["로그인 후 바로 사용", "Customize → Skills", "Desktop과 동기화"],
+     NAVY),
+    ("Claude Code (개발자용)",
+     "자동",
+     "개발자가 쓰는\n명령어 기반 도구",
+     ["슬래시 명령 자동 인식", "플러그인 명령으로 설치", "기술자 도움 시 편리"],
+     NAVY_LIGHT),
 ]
 
-y = 1.45
-for num, title, desc, who in steps:
-    color = NAVY if who == "혼자" else GOLD
-    label_color = WHITE if who == "혼자" else NAVY
-
-    circle = s.shapes.add_shape(
-        MSO_SHAPE.OVAL, Inches(0.6), Inches(y + 0.1), Inches(0.75), Inches(0.75)
-    )
-    circle.fill.solid()
-    circle.fill.fore_color.rgb = color
-    circle.line.fill.background()
-    add_text(s, num, 0.6, y + 0.22, 0.75, 0.55,
-             size=22, bold=True, color=label_color, align=PP_ALIGN.CENTER)
-
-    box = s.shapes.add_shape(
+x = 0.6
+for name, badge, desc, features, color in products:
+    # 카드
+    card = s.shapes.add_shape(
         MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(1.5), Inches(y), Inches(9.5), Inches(0.95)
+        Inches(x), Inches(2.3), Inches(4.1), Inches(4.5)
     )
-    box.fill.solid()
-    box.fill.fore_color.rgb = WHITE
-    box.line.color.rgb = color
-    box.line.width = Pt(1.2)
-    box.adjustments[0] = 0.2
-    add_text(s, title, 1.7, y + 0.1, 9.1, 0.4,
-             size=15, bold=True, color=NAVY)
-    add_text(s, desc, 1.7, y + 0.45, 9.1, 0.4,
-             size=12, color=GRAY_MID)
+    card.fill.solid()
+    card.fill.fore_color.rgb = WHITE
+    card.line.color.rgb = color
+    card.line.width = Pt(2)
+    card.adjustments[0] = 0.08
 
-    tag = s.shapes.add_shape(
+    # 상단 색 바
+    top = s.shapes.add_shape(
+        MSO_SHAPE.RECTANGLE,
+        Inches(x), Inches(2.3), Inches(4.1), Inches(0.85)
+    )
+    top.fill.solid()
+    top.fill.fore_color.rgb = color
+    top.line.fill.background()
+
+    add_text(s, name, x + 0.15, 2.4, 3.8, 0.4,
+             size=16, bold=True, color=WHITE)
+
+    # 배지
+    badge_shape = s.shapes.add_shape(
         MSO_SHAPE.ROUNDED_RECTANGLE,
-        Inches(11.15), Inches(y + 0.25), Inches(1.55), Inches(0.5)
+        Inches(x + 0.15), Inches(2.75), Inches(0.9), Inches(0.3)
     )
-    tag.fill.solid()
-    tag.fill.fore_color.rgb = color
-    tag.line.fill.background()
-    tag.adjustments[0] = 0.4
-    add_text(s, who, 11.15, y + 0.33, 1.55, 0.35,
-             size=13, bold=True, color=label_color, align=PP_ALIGN.CENTER)
+    badge_shape.fill.solid()
+    badge_shape.fill.fore_color.rgb = WHITE
+    badge_shape.line.fill.background()
+    badge_shape.adjustments[0] = 0.5
+    add_text(s, badge, x + 0.15, 2.79, 0.9, 0.25,
+             size=10, bold=True, color=color, align=PP_ALIGN.CENTER)
 
-    y += 0.82
+    # 설명
+    add_text(s, desc, x + 0.2, 3.35, 3.7, 0.8,
+             size=12, color=GRAY_DARK, line_spacing=1.3)
 
-add_footer(s, 20)
+    # 특징 체크리스트
+    y2 = 4.3
+    for f in features:
+        add_text(s, f"✓  {f}", x + 0.2, y2, 3.7, 0.4,
+                 size=11, color=GRAY_MID)
+        y2 += 0.4
+
+    # 이 PC 표시 — Claude Code 카드에
+    if name == "Claude Code (개발자용)":
+        note = s.shapes.add_shape(
+            MSO_SHAPE.ROUNDED_RECTANGLE,
+            Inches(x + 0.2), Inches(6.2), Inches(3.7), Inches(0.45)
+        )
+        note.fill.solid()
+        note.fill.fore_color.rgb = YELLOW_HL
+        note.line.color.rgb = GOLD
+        note.line.width = Pt(1)
+        note.adjustments[0] = 0.4
+        add_text(s, "지금 이 노트북에 이미 설치됨", x + 0.25, 6.28, 3.6, 0.3,
+                 size=11, bold=True, color=RED, align=PP_ALIGN.CENTER)
+
+    x += 4.3
+
+add_footer(s, 24)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 21 — 첫 대화 예시
+# Slide 25 — Claude에게 설치 부탁하기
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, BG)
-add_title_bar(s, "첫 대화 예시", "슬래시 명령어 몰라도 됩니다")
+add_title_bar(s, "Claude에게 부탁하시면 됩니다",
+              "링크 하나 주고 \"깔아줘\" 한마디")
 
-add_text(s, "Claude Desktop 대화창에 이렇게 적으시면 됩니다",
+add_text(s, "가장 쉬운 방법",
+         0.6, 1.55, 12, 0.4, size=20, bold=True, color=NAVY)
+
+# 큰 말풍선
+bubble = s.shapes.add_shape(
+    MSO_SHAPE.ROUNDED_RECTANGLE,
+    Inches(1.5), Inches(2.2), Inches(10.3), Inches(1.8)
+)
+bubble.fill.solid()
+bubble.fill.fore_color.rgb = YELLOW_HL
+bubble.line.color.rgb = GOLD
+bubble.line.width = Pt(2.5)
+bubble.adjustments[0] = 0.1
+
+add_text(s, "💬  Claude 대화창에 이렇게 적어주세요",
+         1.7, 2.33, 10, 0.35, size=12, color=GRAY_MID)
+add_text(s,
+         "\"ironyjk/police-frameworks 플러그인을 저한테 설치해 주세요.\n"
+         "경찰 프레임워크 12개가 들어있는 마켓플레이스입니다.\"",
+         1.7, 2.7, 10, 1.1, size=17, bold=True, color=GRAY_DARK,
+         align=PP_ALIGN.CENTER, line_spacing=1.45)
+
+# 그 다음 설명
+add_text(s, "그럼 Claude가 알아서",
+         0.6, 4.3, 12, 0.4, size=16, bold=True, color=NAVY)
+
+outcomes = [
+    ("Claude Desktop 에서",
+     "Claude가 Settings → Capabilities → Plugins 에서\n마켓플레이스를 추가하고 설치하는 방법을 화면 그대로 안내해 드립니다."),
+    ("Claude 웹 채팅에서",
+     "Customize → Skills 경로로 동일한 설치 절차를 안내합니다."),
+    ("Claude Code (개발자용)에서",
+     "`/plugin marketplace add ironyjk/police-frameworks` 명령어를\n자동 실행해 12개 공구를 바로 등록합니다."),
+]
+
+y = 4.8
+for title, desc in outcomes:
+    icon = s.shapes.add_shape(
+        MSO_SHAPE.OVAL, Inches(0.75), Inches(y + 0.08), Inches(0.4), Inches(0.4)
+    )
+    icon.fill.solid()
+    icon.fill.fore_color.rgb = GREEN
+    icon.line.fill.background()
+    add_text(s, "✓", 0.75, y + 0.1, 0.4, 0.35,
+             size=14, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+    add_text(s, title, 1.3, y + 0.08, 4, 0.4,
+             size=13, bold=True, color=NAVY)
+    add_text(s, desc, 5.4, y + 0.05, 7.5, 0.7,
+             size=11, color=GRAY_DARK, line_spacing=1.3)
+    y += 0.72
+
+add_footer(s, 25)
+
+
+# ══════════════════════════════════════════════════════════════
+# Slide 26 — 첫 대화 예시
+# ══════════════════════════════════════════════════════════════
+s = prs.slides.add_slide(blank)
+set_background(s, BG)
+add_title_bar(s, "첫 대화 예시",
+              "Claude 구독만 되어 있으면, 슬래시 명령어 몰라도 됩니다")
+
+add_text(s, "Claude 대화창에 이렇게 적으시면 됩니다",
          0.6, 1.55, 12, 0.5, size=17, bold=True, color=NAVY)
 
-# 입력창 모방 박스
 chat_box = s.shapes.add_shape(
     MSO_SHAPE.ROUNDED_RECTANGLE,
-    Inches(0.6), Inches(2.15), Inches(12.1), Inches(2.9)
+    Inches(0.6), Inches(2.15), Inches(12.1), Inches(2.8)
 )
 chat_box.fill.solid()
 chat_box.fill.fore_color.rgb = GRAY_PALE
@@ -1181,36 +1609,34 @@ chat_box.line.color.rgb = NAVY
 chat_box.line.width = Pt(1.5)
 chat_box.adjustments[0] = 0.05
 
-add_text(s, "  📝  대화창 입력",
+add_text(s, "  💬  대화창 입력",
          0.75, 2.25, 11.8, 0.35, size=11, color=GRAY_MID)
 
 example = (
-    "peel 스킬로 아래 민원을 분석해 주세요.\n\n"
-    "경주 성건동 근린공원에서 3개월째 야간에 청소년 집단\n"
-    "음주·소란 민원이 반복되고 있습니다. 14건 누적.\n"
-    "순찰 가면 흩어지고, 돌아오면 다시 모입니다.\n"
-    "한쪽 주민은 단속 강화를 요구하고, 다른 쪽은 낙인을\n"
+    "peel 로 아래 민원을 분석해 주세요.\n\n"
+    "경주 성건동 근린공원에서 3개월째 야간에 청소년 집단 음주·소란\n"
+    "민원이 반복되고 있습니다. 14건 누적. 순찰 가면 흩어지고 돌아오면\n"
+    "다시 모입니다. 한쪽 주민은 단속 강화를 요구하고, 다른 쪽은 낙인을\n"
     "반대합니다. 우리 지구대에서 어떻게 접근할까요?"
 )
-add_text(s, example, 0.9, 2.65, 11.8, 2.3,
-         size=14, color=GRAY_DARK, line_spacing=1.45)
+add_text(s, example, 0.9, 2.65, 11.8, 2.2,
+         size=13, color=GRAY_DARK, line_spacing=1.45)
 
-# 기대 결과
 add_text(s, "그러면 /peel 이 이런 초안을 만들어 드립니다",
-         0.6, 5.2, 12, 0.4, size=15, bold=True, color=NAVY)
+         0.6, 5.1, 12, 0.4, size=15, bold=True, color=NAVY)
 
 bullets = [
     "선정 공구: SARA · Crime Triangle · Hot Spots · CPTED · COP · Procedural Justice · Broken Windows(비판)",
     "제외 공구: PEACE·Cognitive (조사 단계 아님) / BCSM·ICAT (위기 아님) / ILP (단일 지점)",
-    "단계별 체크리스트와 \"경찰이 바로 할 수 있는 행동\" 제시",
+    "6가지 실행 방안 — 담당·기한·단계까지 구체적으로 (오늘 보신 사례 C 슬라이드와 동일)",
 ]
-add_bullets(s, bullets, 0.85, 5.6, 12.1, 1.5, size=12)
+add_bullets(s, bullets, 0.85, 5.5, 12.1, 1.5, size=12)
 
-add_footer(s, 21)
+add_footer(s, 26)
 
 
 # ══════════════════════════════════════════════════════════════
-# Slide 22 — 부탁과 연락처
+# Slide 27 — 부탁과 연락처
 # ══════════════════════════════════════════════════════════════
 s = prs.slides.add_slide(blank)
 set_background(s, NAVY_DEEP)
@@ -1232,7 +1658,6 @@ add_text(s,
          "그게 다음 버전에 반영됩니다. 그게 가장 큰 기여입니다.",
          0.8, 3.1, 12, 1.6, size=17, color=GRAY_LIGHT, line_spacing=1.45)
 
-# 연락처 박스
 contact_box = s.shapes.add_shape(
     MSO_SHAPE.ROUNDED_RECTANGLE,
     Inches(0.8), Inches(5.0), Inches(11.8), Inches(1.7)
@@ -1245,21 +1670,18 @@ contact_box.adjustments[0] = 0.1
 
 add_text(s, "만든 사람", 1.1, 5.2, 5, 0.4, size=13, color=GOLD)
 add_text(s, "최희철", 1.1, 5.5, 5, 0.6, size=26, bold=True, color=WHITE)
-add_text(s,
-         "경주경찰서 경찰발전협의회 회원",
+add_text(s, "경주경찰서 경찰발전협의회 회원",
          1.1, 6.1, 5.5, 0.4, size=13, color=GRAY_LIGHT)
-add_text(s,
-         "평소 AI 도구를 만드는 개발자",
+add_text(s, "평소 AI 도구를 만드는 개발자",
          1.1, 6.4, 5.5, 0.4, size=13, color=GRAY_LIGHT)
 
-add_text(s, "다운로드 · 피드백", 7.5, 5.2, 5, 0.4,
-         size=13, color=GOLD)
-add_text(s, "github.com/ironyjk/", 7.5, 5.55, 5, 0.4,
+add_text(s, "설치 링크", 7.5, 5.2, 5, 0.4, size=13, color=GOLD)
+add_text(s, "ironyjk/police-", 7.5, 5.55, 5, 0.4,
          size=16, bold=True, color=WHITE)
-add_text(s, "police-frameworks", 7.5, 5.85, 5, 0.4,
+add_text(s, "frameworks", 7.5, 5.85, 5, 0.4,
          size=16, bold=True, color=WHITE)
-add_text(s, "GitHub Issues 또는 직접 연락 주십시오.", 7.5, 6.2, 5.5, 0.4,
-         size=12, color=GRAY_LIGHT)
+add_text(s, "Claude에게 이걸 깔아달라고만 하시면 됩니다.",
+         7.5, 6.2, 5.8, 0.4, size=12, color=GRAY_LIGHT)
 
 add_text(s,
          "\"경찰은 시민이고, 시민은 경찰이다.\"  — Robert Peel, 1829",

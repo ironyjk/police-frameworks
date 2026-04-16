@@ -1,0 +1,55 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "police-frameworks",
+  "description": "12 evidence-based policing frameworks + /peel meta-router for Korean police officers",
+  "owner": {
+    "name": "최희철 (Choi Hee Chul)",
+    "email": "ironyjk@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "police-frameworks",
+      "description": "경찰 프레임워크 12개 + /peel 메타 라우터 (SARA, CPTED, PEACE, BCSM, ICAT, Procedural Justice 등). 한국 경찰 실무자 참고 자료.",
+      "version": "0.2.0",
+      "author": {
+        "name": "최희철 (Choi Hee Chul)",
+        "email": "ironyjk@gmail.com"
+      },
+      "source": {
+        "source": "github",
+        "repo": "ironyjk/police-frameworks"
+      },
+      "category": "productivity",
+      "keywords": [
+        "police",
+        "korean",
+        "peel",
+        "sara",
+        "cpted",
+        "peace",
+        "bcsm",
+        "icat",
+        "procedural-justice",
+        "framework",
+        "meta-router"
+      ],
+      "homepage": "https://github.com/ironyjk/police-frameworks",
+      "strict": false,
+      "skills": [
+        "./peel",
+        "./sara",
+        "./crime-triangle",
+        "./cpted",
+        "./hot-spots",
+        "./ilp",
+        "./peace-model",
+        "./cognitive-interview",
+        "./bcsm",
+        "./icat",
+        "./procedural-justice",
+        "./cop",
+        "./broken-windows"
+      ]
+    }
+  ]
+}
