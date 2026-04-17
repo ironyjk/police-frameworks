@@ -48,6 +48,8 @@ You describe a situation (a hot spot, a difficult interview, a crisis call, a co
 
 ## Installation
 
+> 💡 **짧은 이름**: [래퍼 설정](https://github.com/ironyjk/claude-frameworks-marketplace#짧은-이름으로-쓰기-optional) 후 `/peel`로 호출 가능
+
 **Easiest — just ask Claude Code to do it.**
 
 In **Claude Desktop** (click the `</>` Code view in the sidebar, open any folder) or **Claude Code CLI**, paste:
