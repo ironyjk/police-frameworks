@@ -1,0 +1,35 @@
+{
+  "name": "police-frameworks",
+  "description": "Evidence-based policing meta-router — 20 frameworks for problem-oriented policing, crisis negotiation, investigative interviewing, crime prevention, and community safety. Includes SARA, Crime Triangle, CPTED, Hot Spots, ILP, PEACE Model, Cognitive Interview, BCSM, ICAT, Procedural Justice, COP, Broken Windows, SCP, Restorative Justice, Risk Assessment, Repeat Victimization, Third-Party Policing, Trauma-Informed, NICHD Protocol. Korean police context built-in. Invoke /peel.",
+  "version": "0.2.0",
+  "author": {
+    "name": "Choi Hee Chul",
+    "email": "ironyjk@gmail.com"
+  },
+  "homepage": "https://github.com/ironyjk/police-frameworks",
+  "repository": "https://github.com/ironyjk/police-frameworks",
+  "license": "MIT",
+  "keywords": ["policing", "evidence-based", "sara", "cpted", "crime-prevention", "korean"],
+  "skills": [
+    "./bcsm",
+    "./broken-windows",
+    "./cognitive-interview",
+    "./cop",
+    "./cpted",
+    "./crime-triangle",
+    "./hot-spots",
+    "./icat",
+    "./ilp",
+    "./nichd-protocol",
+    "./peace-model",
+    "./peel",
+    "./procedural-justice",
+    "./repeat-victimization",
+    "./restorative-justice",
+    "./risk-assessment",
+    "./sara",
+    "./scp",
+    "./third-party",
+    "./trauma-informed"
+  ]
+}
