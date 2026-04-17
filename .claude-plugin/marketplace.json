@@ -15,10 +15,7 @@
         "name": "최희철 (Choi Hee Chul)",
         "email": "ironyjk@gmail.com"
       },
-      "source": {
-        "source": "github",
-        "repo": "ironyjk/police-frameworks"
-      },
+      "source": "./",
       "category": "education",
       "keywords": [
         "police",
